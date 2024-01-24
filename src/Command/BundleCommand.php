@@ -40,7 +40,7 @@ final readonly class BundleCommand
 
 		if ($outputFile) {
 			if (!str_ends_with($outputFile, '.json')) {
-				$outputFile .=  '/' . $schemaName;
+				$outputFile = rtrim($outputFile, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $schemaName;
 			}
 			$output->writeln('Writing output to: ' . $outputFile);
 			file_put_contents($outputFile, $json);
