@@ -21,7 +21,15 @@ final readonly class BundleCommand
 
 		$service = new BundleService(new DocumentFactory($root . DIRECTORY_SEPARATOR));
 
-		$output->writeln('Bundling: ' . $schemaName);
+
+		$outputFile = $input->outputFile;
+		if (!$outputFile && $this->config?->output) {
+			$outputFile = $this->config->output;
+		}
+
+		if ($outputFile) {
+			$output->writeln('Bundling: ' . $schemaName);
+		}
 		$content = $service->bundle($schemaName);
 
 		$flags = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
@@ -29,11 +37,6 @@ final readonly class BundleCommand
 			$flags |= JSON_PRETTY_PRINT;
 		}
 		$json = (string)json_encode($content->get(), $flags);
-
-		$outputFile = $input->outputFile;
-		if (!$outputFile && $this->config?->output) {
-			$outputFile = $this->config->output;
-		}
 
 		if ($outputFile) {
 			if (!str_ends_with($outputFile, '.json')) {
