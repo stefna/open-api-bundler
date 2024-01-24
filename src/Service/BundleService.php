@@ -92,10 +92,20 @@ final class BundleService
 	private function updateSchemas(WritableDocument&Document $document): void
 	{
 		foreach (SchemaType::cases() as $type) {
-			$document->set(match ($type) {
-				SchemaType::Schema => '/components/schemas',
-				SchemaType::RequestBodies => '/components/requestBodies',
-			}, $this->processInternalSchemas($type, $document));
+			$pathKey = match ($type) {
+				SchemaType::Schema => 'schemas',
+				SchemaType::RequestBodies => 'requestBodies',
+			};
+			$schemas = $this->processInternalSchemas($type, $document);
+			$path = '/components/' . $pathKey;
+			if ($document->has($path)) {
+				$document->set($path, $schemas);
+			}
+			else {
+				$components = $document->get('/components');
+				$components[$pathKey] = $schemas;
+				$document->set('/components', $components);
+			}
 		}
 	}
 
