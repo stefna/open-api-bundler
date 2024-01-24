@@ -1,0 +1,20 @@
+{
+	"name": "stefna/open-api-bundler",
+	"description": "Cli tool to help bundle open api specifications",
+	"license": "MIT",
+	"type": "library",
+	"authors": [
+		{
+			"name": "Andreas Sundqvist",
+			"email": "andreas@stefna.is"
+		}
+	],
+	"require": {
+		"php": "^8.2",
+	},
+	"autoload": {
+		"psr-4": {
+			"Stefna\\OpenApiBundler\\": "src/"
+		}
+	}
+}
