@@ -16,6 +16,7 @@ final class BundleDefinition extends Definition
 	public const SCHEMA = 'schema';
 	public const OUTPUT = 'output';
 	public const COMPRESSION = 'compress';
+	public const ROOT = 'root';
 
 	protected function configure(): void
 	{
@@ -25,6 +26,7 @@ final class BundleDefinition extends Definition
 		$this->addArgument(self::OUTPUT, InputArgument::OPTIONAL, 'Output file. If not set prints to STDOUT');
 
 		$this->addOption(self::COMPRESSION, null,InputOption::VALUE_NONE, 'Remove white space from output');
+		$this->addOption(self::ROOT, null,InputOption::VALUE_REQUIRED, 'Root directory. If not set uses folder of schema');
 
 		$this->setCommand(new BundleCommand());
 	}
@@ -33,10 +35,24 @@ final class BundleDefinition extends Definition
 	{
 		/** @var string $schema */
 		$schema = $input->getArgument(self::SCHEMA);
+		/** @var string $root */
+		$root = $input->getOption(self::ROOT) ?? '';
+		$root = rtrim($root, DIRECTORY_SEPARATOR);
 		if (!file_exists($schema)) {
-			$schema = realpath(getcwd() . DIRECTORY_SEPARATOR . $schema);
-			if (!$schema || !file_exists($schema)) {
-				throw new \RuntimeException('Can\'t read file.');
+			$pathsToCheck = [
+				realpath(getcwd() . DIRECTORY_SEPARATOR . $schema),
+				$root . DIRECTORY_SEPARATOR . $schema,
+			];
+			$found = false;
+			foreach ($pathsToCheck as $path) {
+				if (file_exists((string)$path)) {
+					$schema = $path;
+					$found = true;
+					break;
+				}
+			}
+			if (!$found) {
+				throw new \RuntimeException('Can\'t read file: ' . $path);
 			}
 		}
 		elseif (!str_starts_with($schema, '/')) {
@@ -46,12 +62,19 @@ final class BundleDefinition extends Definition
 		if ($input->getOption(self::COMPRESSION)) {
 			$compress = true;
 		}
+
+		if (!$root) {
+			$root = dirname($schema);
+		}
+		$schema = str_replace($root . DIRECTORY_SEPARATOR, '', $schema);
+
 		/** @var string|null $outputFile */
 		$outputFile = $input->getArgument(self::OUTPUT);
 		return new BundleInput(
 			$schema,
 			$outputFile,
 			$compress,
+			$root,
 		);
 	}
 }

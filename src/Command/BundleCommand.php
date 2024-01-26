@@ -16,11 +16,7 @@ final readonly class BundleCommand
 
 	public function __invoke(BundleInput $input, OutputInterface $output): int
 	{
-		$root = dirname($input->schema);
-		$schemaName = basename($input->schema);
-
-		$service = new BundleService(new DocumentFactory($root . DIRECTORY_SEPARATOR));
-
+		$service = new BundleService(new DocumentFactory($input->root . DIRECTORY_SEPARATOR));
 
 		$outputFile = $input->outputFile;
 		if (!$outputFile && $this->config?->output) {
@@ -28,9 +24,9 @@ final readonly class BundleCommand
 		}
 
 		if ($outputFile) {
-			$output->writeln('Bundling: ' . $schemaName);
+			$output->writeln('Bundling: ' . $input->schema);
 		}
-		$content = $service->bundle($schemaName);
+		$content = $service->bundle($input->schema);
 
 		$flags = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
 		if (!($input->compress ?? $this->config?->compress)) {
@@ -40,7 +36,7 @@ final readonly class BundleCommand
 
 		if ($outputFile) {
 			if (!str_ends_with($outputFile, '.json')) {
-				$outputFile = rtrim($outputFile, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $schemaName;
+				$outputFile = rtrim($outputFile, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $input->schema;
 			}
 			$output->writeln('Writing output to: ' . $outputFile);
 			file_put_contents($outputFile, $json);

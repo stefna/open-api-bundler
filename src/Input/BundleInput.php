@@ -10,5 +10,6 @@ final class BundleInput extends AbstractInput
 		public string $schema,
 		public ?string $outputFile,
 		public ?bool $compress,
+		public string $root,
 	) {}
 }
