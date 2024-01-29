@@ -2,7 +2,7 @@
 
 namespace Stefna\OpenApiBundler;
 
-final readonly class BundleConfig
+final readonly class SchemaConfig
 {
 	public function __construct(
 		public ?string $output,

@@ -4,19 +4,26 @@ namespace Stefna\OpenApiBundler\Definition;
 
 use Circli\Console\Definition;
 use Stefna\OpenApiBundler\Command\BundleCommand;
-use Stefna\OpenApiBundler\Input\BundleInput;
+use Stefna\OpenApiBundler\Command\InlineCommand;
+use Stefna\OpenApiBundler\Input\SchemaInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class BundleDefinition extends Definition
+final class SchemaDefinition extends Definition
 {
-	public const NAME = 'bundle:schema';
+	public const NAME = 'schema:inline';
 	public const SCHEMA = 'schema';
 	public const OUTPUT = 'output';
 	public const COMPRESSION = 'compress';
 	public const ROOT = 'root';
+
+	public function __construct(
+		private string|object $commandClass,
+	) {
+		parent::__construct();
+	}
 
 	protected function configure(): void
 	{
@@ -28,7 +35,7 @@ final class BundleDefinition extends Definition
 		$this->addOption(self::COMPRESSION, null,InputOption::VALUE_NONE, 'Remove white space from output');
 		$this->addOption(self::ROOT, null,InputOption::VALUE_REQUIRED, 'Root directory. If not set uses folder of schema');
 
-		$this->setCommand(new BundleCommand());
+		$this->setCommand($this->commandClass);
 	}
 
 	public function transformInput(InputInterface $input, OutputInterface $output): InputInterface
@@ -70,7 +77,7 @@ final class BundleDefinition extends Definition
 
 		/** @var string|null $outputFile */
 		$outputFile = $input->getArgument(self::OUTPUT);
-		return new BundleInput(
+		return new SchemaInput(
 			$schema,
 			$outputFile,
 			$compress,

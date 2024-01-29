@@ -4,7 +4,7 @@ namespace Stefna\OpenApiBundler\Input;
 
 use Circli\Console\AbstractInput;
 
-final class BundleInput extends AbstractInput
+final class SchemaInput extends AbstractInput
 {
 	public function __construct(
 		public string $schema,

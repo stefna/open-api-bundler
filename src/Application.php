@@ -2,16 +2,16 @@
 
 namespace Stefna\OpenApiBundler;
 
+use Circli\Console\Definition;
 use Circli\Console\SimpleCommandResolver;
-use Stefna\OpenApiBundler\Definition\BundleDefinition;
 
 final class Application extends \Circli\Console\Application
 {
-	public function __construct()
+	public function __construct(Definition $definition)
 	{
 		parent::__construct(new SimpleCommandResolver());
 		$this->setName('Bundle open-api specification');
-		$this->addDefinition(new BundleDefinition());
-		$this->setDefaultCommand(BundleDefinition::NAME, true);
+		$this->addDefinition($definition);
+		$this->setDefaultCommand($definition->getName(), true);
 	}
 }

@@ -3,18 +3,18 @@
 namespace Stefna\OpenApiBundler\Command;
 
 use JsonPointer\DocumentFactory;
-use Stefna\OpenApiBundler\BundleConfig;
-use Stefna\OpenApiBundler\Input\BundleInput;
+use Stefna\OpenApiBundler\SchemaConfig;
+use Stefna\OpenApiBundler\Input\SchemaInput;
 use Stefna\OpenApiBundler\Service\BundleService;
 use Symfony\Component\Console\Output\OutputInterface;
 
 final readonly class BundleCommand
 {
 	public function __construct(
-		private ?BundleConfig $config = null
+		private ?SchemaConfig $config = null
 	) {}
 
-	public function __invoke(BundleInput $input, OutputInterface $output): int
+	public function __invoke(SchemaInput $input, OutputInterface $output): int
 	{
 		$service = new BundleService(new DocumentFactory($input->root . DIRECTORY_SEPARATOR));
 
