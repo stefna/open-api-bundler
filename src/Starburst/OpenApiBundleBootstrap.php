@@ -8,7 +8,8 @@ use Starburst\Contracts\Extensions\DefinitionProvider;
 use Stefna\DependencyInjection\Definition\DefinitionArray;
 use Stefna\DependencyInjection\Helper\Autowire;
 use Stefna\OpenApiBundler\Command\BundleCommand;
-use Stefna\OpenApiBundler\Definition\BundleDefinition;
+use Stefna\OpenApiBundler\Command\InlineCommand;
+use Stefna\OpenApiBundler\Definition\SchemaDefinition;
 
 final class OpenApiBundleBootstrap implements Bootloader, CliCommandProvider, DefinitionProvider
 {
@@ -21,12 +22,9 @@ final class OpenApiBundleBootstrap implements Bootloader, CliCommandProvider, De
 
 	public function createCliDefinitions(): array
 	{
-		$definition = new BundleDefinition();
-		// replace command with one that will be fetched from container
-		$definition->setCommand(BundleCommand::class);
-
 		return [
-			$definition,
+			new SchemaDefinition(BundleCommand::class),
+			new SchemaDefinition(InlineCommand::class),
 		];
 	}
 }
