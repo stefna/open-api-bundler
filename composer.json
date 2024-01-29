@@ -1,6 +1,6 @@
 {
 	"name": "stefna/open-api-bundler",
-	"description": "Cli tool to help bundle open api specifications",
+	"description": "Cli tool to help bin/bundle open api specifications",
 	"license": "MIT",
 	"type": "library",
 	"authors": [
@@ -26,6 +26,7 @@
 		}
 	},
 	"bin": [
-		"bundle"
+		"bin/bundle",
+		"bin/inline"
 	]
 }

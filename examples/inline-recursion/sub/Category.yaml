@@ -1,0 +1,20 @@
+title: Category
+type: object
+properties:
+  id:
+    type: string
+    format: uuid
+  name:
+    type: string
+  createdOn:
+    type: string
+    format: date-time
+    readOnly: true
+  modifiedOn:
+    type: string
+    format: date-time
+    readOnly: true
+  role:
+    $ref: Role.json
+  parent:
+    $ref: Category.yaml

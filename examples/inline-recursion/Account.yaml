@@ -1,0 +1,31 @@
+title: Account
+type: object
+properties:
+    id:
+        type: string
+        format: uuid
+    name:
+        type: string
+    status:
+        type: string
+        enum:
+            - new
+            - verified
+            - active
+            - blocked
+            - deleted
+        readOnly: true
+    createdOn:
+        type: string
+        format: date-time
+        readOnly: true
+    blockedUntil:
+        type: string
+        format: date-time
+    category:
+        $ref: "sub/Category.yaml"
+    role:
+        $ref: "sub/Role.json"
+required:
+    - id
+    - status
