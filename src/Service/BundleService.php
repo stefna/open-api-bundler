@@ -39,22 +39,23 @@ final class BundleService
 	): Document&WritableDocument {
 		foreach ($this->findReferences($document, $referenceRoot) as $ref => $documentPaths) {
 			$reference = Reference::fromString($ref);
+			$schemaName = $this->getSchemaName($reference);
 			$type = $this->resolveSchemaType($documentPaths);
 			// update $ref to new ref
 			foreach ($documentPaths as $path) {
 				$document->set($path, ['$ref' => match ($type) {
-					SchemaType::Schema => '#/components/schemas/' . $reference->getName(),
-					SchemaType::RequestBodies => '#/components/requestBodies/' . $reference->getName(),
+					SchemaType::Schema => '#/components/schemas/' . $schemaName,
+					SchemaType::RequestBodies => '#/components/requestBodies/' . $schemaName,
 				}]);
 			}
 
-			if (isset($this->components[$type->name][$reference->getName()])) {
+			if (isset($this->components[$type->name][$schemaName])) {
 				continue;
 			}
 
 			// reserve schema to avoid infinite recursion
-			$this->components[$type->name][$reference->getName()] = true;
-			$this->components[$type->name][$reference->getName()] = $this->processDocument(
+			$this->components[$type->name][$schemaName] = true;
+			$this->components[$type->name][$schemaName] = $this->processDocument(
 				$this->documentFactory->createFromReference($reference),
 				dirname($reference->getUri()),
 			)->get();
@@ -102,6 +103,7 @@ final class BundleService
 				$document->set($path, $schemas);
 			}
 			else {
+				/** @var array<string, mixed> $components */
 				$components = $document->get('/components');
 				$components[$pathKey] = $schemas;
 				$document->set('/components', $components);
@@ -158,5 +160,15 @@ final class BundleService
 			$absolutes[] = $part;
 		}
 		return (str_starts_with($path, DIRECTORY_SEPARATOR) ? DIRECTORY_SEPARATOR : '') . implode(DIRECTORY_SEPARATOR, $absolutes);
+	}
+
+	private function getSchemaName(Reference $reference): string
+	{
+		$name = $reference->getName();
+		if (!str_contains($name, '.')) {
+			return $name;
+		}
+
+		return substr($name, 0, (int)strpos($name, '.'));
 	}
 }
