@@ -19,7 +19,10 @@ final class InlineService
 
 	public function inline(string $schemaFile): Document
 	{
-		return $this->processDocument($this->documentFactory->createFromFile($schemaFile));
+		return $this->processDocument(
+			$this->documentFactory->createFromFile($schemaFile),
+			$this->documentFactory->findRoot($schemaFile),
+		);
 	}
 
 	private function processDocument(
@@ -49,7 +52,7 @@ final class InlineService
 			$this->components[$type->name][$reference->getName()] = $schemaId;
 			$this->components[$type->name][$reference->getName()] = $this->processDocument(
 				$referenceDocument,
-				dirname($reference->getUri()),
+				$this->documentFactory->findRoot($reference),
 			)->get();
 			$this->components[$type->name][$reference->getName()]['$id'] = $schemaId;
 
