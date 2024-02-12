@@ -17,6 +17,7 @@ final class OpenApiBundleBootstrap implements Bootloader, CliCommandProvider, De
 	{
 		return new DefinitionArray([
 			BundleCommand::class => Autowire::cls(),
+			InlineCommand::class => Autowire::cls(),
 		]);
 	}
 
