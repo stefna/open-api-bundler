@@ -6,6 +6,7 @@ use Starburst\Contracts\Bootloader;
 use Starburst\Contracts\Extensions\CliCommandProvider;
 use Starburst\Contracts\Extensions\DefinitionProvider;
 use Stefna\DependencyInjection\Definition\DefinitionArray;
+use Stefna\DependencyInjection\Definition\DefinitionSource;
 use Stefna\DependencyInjection\Helper\Autowire;
 use Stefna\OpenApiBundler\Command\BundleCommand;
 use Stefna\OpenApiBundler\Command\InlineCommand;
