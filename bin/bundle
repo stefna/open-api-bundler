@@ -34,6 +34,6 @@ if (!defined('SOA_BUNDLE_COMPOSER_INSTALL')) {
 
 $version = '0.0.0';
 
-$application = new Application(new SchemaDefinition(new BundleCommand()));
+$application = new Application(new SchemaDefinition('bundle', new BundleCommand()));
 
 $application->run();

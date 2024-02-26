@@ -34,6 +34,6 @@ if (!defined('SOA_BUNDLE_COMPOSER_INSTALL')) {
 
 $version = '0.0.0';
 
-$application = new Application(new SchemaDefinition(new InlineCommand()));
+$application = new Application(new SchemaDefinition('inline', new InlineCommand()));
 
 $application->run();

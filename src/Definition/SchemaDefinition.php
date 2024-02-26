@@ -3,8 +3,6 @@
 namespace Stefna\OpenApiBundler\Definition;
 
 use Circli\Console\Definition;
-use Stefna\OpenApiBundler\Command\BundleCommand;
-use Stefna\OpenApiBundler\Command\InlineCommand;
 use Stefna\OpenApiBundler\Input\SchemaInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,13 +11,14 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class SchemaDefinition extends Definition
 {
-	public const NAME = 'schema:inline';
+	public const NAME = 'schema:';
 	public const SCHEMA = 'schema';
 	public const OUTPUT = 'output';
 	public const COMPRESSION = 'compress';
 	public const ROOT = 'root';
 
 	public function __construct(
+		private string $name,
 		private string|object $commandClass,
 	) {
 		parent::__construct();
@@ -27,7 +26,7 @@ final class SchemaDefinition extends Definition
 
 	protected function configure(): void
 	{
-		$this->setName(self::NAME);
+		$this->setName(self::NAME . $this->name);
 
 		$this->addArgument(self::SCHEMA, InputArgument::REQUIRED, 'Schema to bundle');
 		$this->addArgument(self::OUTPUT, InputArgument::OPTIONAL, 'Output file. If not set prints to STDOUT');

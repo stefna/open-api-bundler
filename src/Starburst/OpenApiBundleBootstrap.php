@@ -25,8 +25,8 @@ final class OpenApiBundleBootstrap implements Bootloader, CliCommandProvider, De
 	public function createCliDefinitions(): array
 	{
 		return [
-			new SchemaDefinition(BundleCommand::class),
-			new SchemaDefinition(InlineCommand::class),
+			new SchemaDefinition('bundle', BundleCommand::class),
+			new SchemaDefinition('inline', InlineCommand::class),
 		];
 	}
 }
