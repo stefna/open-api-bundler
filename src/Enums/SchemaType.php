@@ -6,4 +6,6 @@ enum SchemaType
 {
 	case Schema;
 	case RequestBodies;
+	case Responses;
+	case Parameters;
 }

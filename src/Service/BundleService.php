@@ -54,6 +54,8 @@ final class BundleService
 				$document->set($path, ['$ref' => match ($type) {
 					SchemaType::Schema => '#/components/schemas/' . $schemaName,
 					SchemaType::RequestBodies => '#/components/requestBodies/' . $schemaName,
+					SchemaType::Responses => '#/components/responses/' . $schemaName,
+					SchemaType::Parameters => '#/components/parameters/' . $schemaName,
 				}]);
 			}
 
@@ -84,6 +86,8 @@ final class BundleService
 		$path = match ($type) {
 			SchemaType::Schema => '/components/schemas',
 			SchemaType::RequestBodies => '/components/requestBodies',
+			SchemaType::Responses => '/components/responses',
+			SchemaType::Parameters => '/components/parameters',
 		};
 		$schemas = $this->components[$type->name] ?? [];
 		if ($document->has($path)) {
@@ -109,6 +113,8 @@ final class BundleService
 			$pathKey = match ($type) {
 				SchemaType::Schema => 'schemas',
 				SchemaType::RequestBodies => 'requestBodies',
+				SchemaType::Responses => 'responses',
+				SchemaType::Parameters => 'parameters',
 			};
 			$schemas = $this->processInternalSchemas($type, $document);
 			$path = '/components/' . $pathKey;
@@ -153,6 +159,16 @@ final class BundleService
 			if (str_ends_with($path, 'requestBody')) {
 				return SchemaType::RequestBodies;
 			}
+			if (
+				str_contains($path, '/responses/') &&
+				!str_contains($path, '/content/')
+			) {
+				return SchemaType::Responses;
+			}
+			// Disabled for now. Need more testing for side effects
+			// if (str_contains($path, '/parameters/')) {
+			// 	return SchemaType::Parameters;
+			// }
 		}
 		return SchemaType::Schema;
 	}

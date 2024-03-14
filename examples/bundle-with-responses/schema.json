@@ -1,0 +1,49 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "Api",
+		"version": "1.0"
+	},
+	"servers": [
+		{
+			"description": "production",
+			"url": "..."
+		}
+	],
+	"paths": {
+		"/sites": {
+			"post": {
+				"operationId": "createSite",
+				"summary": "Register new site",
+				"requestBody": {
+					"$ref": "payloads/CreateSitePayload.json"
+				},
+				"responses": {
+					"default": {
+						"description": "ok"
+					},
+					"201": {
+						"$ref": "responses/SiteResponse.json"
+					},
+					"400": {
+						"$ref": "#/components/responses/InputError"
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"responses": {
+			"InputError": {
+				"description": "Generic input error",
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "models/ErrorException.json"
+						}
+					}
+				}
+			}
+		}
+	}
+}
