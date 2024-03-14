@@ -1,0 +1,18 @@
+{
+	"title": "Exception handle by underlying system",
+	"type": "object",
+	"readOnly": true,
+	"required": [
+		"messages"
+	],
+	"properties": {
+		"exception": {
+			"type": "object",
+			"properties": {
+				"message": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

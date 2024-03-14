@@ -41,24 +41,37 @@ final class BundleService
 			$reference = Reference::fromString($ref);
 			$schemaName = $this->getSchemaName($reference);
 			$type = $this->resolveSchemaType($documentPaths);
+			$typeKey = $type->name;
+			$customInlining = [];
+
 			// update $ref to new ref
 			foreach ($documentPaths as $path) {
+				if (str_starts_with($documentPaths[0], '/paths/') && substr_count($documentPaths[0], '/') === 2) {
+					$customInlining[] = $path;
+					$typeKey = 'inlining';
+					continue;
+				}
 				$document->set($path, ['$ref' => match ($type) {
 					SchemaType::Schema => '#/components/schemas/' . $schemaName,
 					SchemaType::RequestBodies => '#/components/requestBodies/' . $schemaName,
 				}]);
 			}
 
-			if (isset($this->components[$type->name][$schemaName])) {
+			if (isset($this->components[$typeKey][$schemaName])) {
 				continue;
 			}
 
 			// reserve schema to avoid infinite recursion
-			$this->components[$type->name][$schemaName] = true;
-			$this->components[$type->name][$schemaName] = $this->processDocument(
+			$this->components[$typeKey][$schemaName] = true;
+			$this->components[$typeKey][$schemaName] = $this->processDocument(
 				$this->documentFactory->createFromReference($reference),
 				dirname($reference->getUri()),
 			)->get();
+			if ($customInlining) {
+				foreach ($customInlining as $path) {
+					$document->set($path, $this->components[$typeKey][$schemaName]);
+				}
+			}
 		}
 		return $document;
 	}
