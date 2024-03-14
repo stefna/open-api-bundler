@@ -121,7 +121,7 @@ final class BundleService
 			if ($document->has($path)) {
 				$document->set($path, $schemas);
 			}
-			else {
+			elseif ($schemas) {
 				/** @var array<string, mixed> $components */
 				$components = $document->get('/components');
 				$components[$pathKey] = $schemas;
