@@ -18,7 +18,8 @@
 	"require-dev": {
 		"stefna/codestyle": "^1.12.1",
 		"phpstan/phpstan": "^1.10",
-		"starburst/contract": "^1.0"
+		"starburst/contract": "^1.0",
+		"stefna/di": "^1.0"
 	},
 	"autoload": {
 		"psr-4": {

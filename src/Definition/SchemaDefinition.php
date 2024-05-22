@@ -52,7 +52,7 @@ final class SchemaDefinition extends Definition
 			$found = false;
 			foreach ($pathsToCheck as $path) {
 				if (file_exists((string)$path)) {
-					$schema = $path;
+					$schema = (string)$path;
 					$found = true;
 					break;
 				}

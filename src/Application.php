@@ -12,6 +12,7 @@ final class Application extends \Circli\Console\Application
 		parent::__construct(new SimpleCommandResolver());
 		$this->setName('Bundle open-api specification');
 		$this->addDefinition($definition);
+		// @phpstan-ignore argument.type
 		$this->setDefaultCommand($definition->getName(), true);
 	}
 }

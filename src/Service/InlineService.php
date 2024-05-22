@@ -47,6 +47,7 @@ final class InlineService
 			}
 
 			$referenceDocument = $this->documentFactory->createFromReference($reference);
+			// @phpstan-ignore offsetAccess.nonOffsetAccessible
 			$schemaId = $referenceDocument->get()['$id'] ?? $reference->getName();
 			// reserve schema to avoid infinite recursion
 			$this->components[$type->name][$reference->getName()] = $schemaId;
@@ -54,6 +55,7 @@ final class InlineService
 				$referenceDocument,
 				$this->documentFactory->findRoot($reference),
 			)->get();
+			// @phpstan-ignore offsetAccess.nonOffsetAccessible
 			$this->components[$type->name][$reference->getName()]['$id'] = $schemaId;
 
 			// update $ref to new ref
