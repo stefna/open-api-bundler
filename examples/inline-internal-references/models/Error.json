@@ -1,0 +1,13 @@
+{
+	"title": "Generic Error Object",
+	"type": "object",
+	"readOnly": true,
+	"required": [
+		"messages"
+	],
+	"properties": {
+		"messages": {
+			"type": "string"
+		}
+	}
+}

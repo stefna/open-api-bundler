@@ -1,0 +1,417 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "TEST API",
+        "version": "1.0",
+        "contact": {
+            "name": "Stefna ehf",
+            "url": "https://stefna.is",
+            "email": "no-support@stefna.is"
+        }
+    },
+    "paths": {
+        "/tests": {
+            "get": {
+                "operationId": "listTests",
+                "tags": [
+                    "Tenants",
+                    "Admin"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "readOnly": true,
+                                    "properties": {
+                                        "next": {
+                                            "type": "string",
+                                            "nullable": true
+                                        },
+                                        "previous": {
+                                            "type": "string",
+                                            "nullable": true
+                                        },
+                                        "total": {
+                                            "nullable": true,
+                                            "type": "integer"
+                                        },
+                                        "extra": {
+                                            "nullable": true,
+                                            "type": "object"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "to": {
+                                                        "oneOf": [
+                                                            {
+                                                                "type": "string"
+                                                            },
+                                                            {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        ]
+                                                    },
+                                                    "from": {
+                                                        "type": "string"
+                                                    },
+                                                    "text": {
+                                                        "type": "string"
+                                                    },
+                                                    "validity": {
+                                                        "description": "Number of minutes for the message to be valid",
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "to",
+                                                    "from",
+                                                    "text"
+                                                ],
+                                                "$id": "Test.json"
+                                            }
+                                        }
+                                    },
+                                    "$id": "PaginatedTests"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Generic input error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "Generic Error Object",
+                                    "type": "object",
+                                    "readOnly": true,
+                                    "required": [
+                                        "messages"
+                                    ],
+                                    "properties": {
+                                        "messages": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "$id": "Error.json"
+                                }
+                            }
+                        },
+                        "$id": "InputError"
+                    },
+                    "401": {
+                        "description": "Need to authenticate to access resource",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "Generic Error Object",
+                                    "type": "object",
+                                    "readOnly": true,
+                                    "required": [
+                                        "messages"
+                                    ],
+                                    "properties": {
+                                        "messages": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "$id": "Error.json"
+                                }
+                            }
+                        },
+                        "$id": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Access denied",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "Generic Error Object",
+                                    "type": "object",
+                                    "readOnly": true,
+                                    "required": [
+                                        "messages"
+                                    ],
+                                    "properties": {
+                                        "messages": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "$id": "Error.json"
+                                }
+                            }
+                        },
+                        "$id": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Requested resource not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "Generic Error Object",
+                                    "type": "object",
+                                    "readOnly": true,
+                                    "required": [
+                                        "messages"
+                                    ],
+                                    "properties": {
+                                        "messages": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "$id": "Error.json"
+                                }
+                            }
+                        },
+                        "$id": "NotFound"
+                    },
+                    "500": {
+                        "description": "Unknown internal error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "title": "Generic Error Object",
+                                    "type": "object",
+                                    "readOnly": true,
+                                    "required": [
+                                        "messages"
+                                    ],
+                                    "properties": {
+                                        "messages": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "$id": "Error.json"
+                                }
+                            }
+                        },
+                        "$id": "InternalError"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "requestBodies": [],
+        "schemas": {
+            "PaginatedTests": {
+                "type": "object",
+                "readOnly": true,
+                "properties": {
+                    "next": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "previous": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "total": {
+                        "nullable": true,
+                        "type": "integer"
+                    },
+                    "extra": {
+                        "nullable": true,
+                        "type": "object"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "to": {
+                                    "oneOf": [
+                                        {
+                                            "type": "string"
+                                        },
+                                        {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    ]
+                                },
+                                "from": {
+                                    "type": "string"
+                                },
+                                "text": {
+                                    "type": "string"
+                                },
+                                "validity": {
+                                    "description": "Number of minutes for the message to be valid",
+                                    "type": "integer"
+                                }
+                            },
+                            "required": [
+                                "to",
+                                "from",
+                                "text"
+                            ],
+                            "$id": "Test.json"
+                        }
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearer-token": {
+                "type": "http",
+                "scheme": "bearer",
+                "description": "There are 3 types of bearer tokens."
+            }
+        },
+        "responses": {
+            "InternalError": {
+                "description": "Unknown internal error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "title": "Generic Error Object",
+                            "type": "object",
+                            "readOnly": true,
+                            "required": [
+                                "messages"
+                            ],
+                            "properties": {
+                                "messages": {
+                                    "type": "string"
+                                }
+                            },
+                            "$id": "Error.json"
+                        }
+                    }
+                }
+            },
+            "NotFound": {
+                "description": "Requested resource not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "title": "Generic Error Object",
+                            "type": "object",
+                            "readOnly": true,
+                            "required": [
+                                "messages"
+                            ],
+                            "properties": {
+                                "messages": {
+                                    "type": "string"
+                                }
+                            },
+                            "$id": "Error.json"
+                        }
+                    }
+                }
+            },
+            "Unauthorized": {
+                "description": "Need to authenticate to access resource",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "title": "Generic Error Object",
+                            "type": "object",
+                            "readOnly": true,
+                            "required": [
+                                "messages"
+                            ],
+                            "properties": {
+                                "messages": {
+                                    "type": "string"
+                                }
+                            },
+                            "$id": "Error.json"
+                        }
+                    }
+                }
+            },
+            "Forbidden": {
+                "description": "Access denied",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "title": "Generic Error Object",
+                            "type": "object",
+                            "readOnly": true,
+                            "required": [
+                                "messages"
+                            ],
+                            "properties": {
+                                "messages": {
+                                    "type": "string"
+                                }
+                            },
+                            "$id": "Error.json"
+                        }
+                    }
+                }
+            },
+            "InputError": {
+                "description": "Generic input error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "title": "Generic Error Object",
+                            "type": "object",
+                            "readOnly": true,
+                            "required": [
+                                "messages"
+                            ],
+                            "properties": {
+                                "messages": {
+                                    "type": "string"
+                                }
+                            },
+                            "$id": "Error.json"
+                        }
+                    }
+                }
+            },
+            "GenericError": {
+                "description": "Generic processing error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "title": "Generic Error Object",
+                            "type": "object",
+                            "readOnly": true,
+                            "required": [
+                                "messages"
+                            ],
+                            "properties": {
+                                "messages": {
+                                    "type": "string"
+                                }
+                            },
+                            "$id": "Error.json"
+                        }
+                    }
+                }
+            },
+            "Redirect": {
+                "description": "Generic redirect response",
+                "headers": {
+                    "Location": {
+                        "description": "new location for resource",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "security": [
+        {
+            "bearer-token": []
+        }
+    ]
+}

@@ -46,7 +46,19 @@ final class InlineService
 				continue;
 			}
 
-			$referenceDocument = $this->documentFactory->createFromReference($reference);
+			if ($reference->isInternal()) {
+				$subDocument = $document->get($reference->getPath());
+				if (!is_array($subDocument)) {
+					throw new \BadMethodCallException('Failed to resolve internal model properly');
+				}
+				$referenceDocument = $this->documentFactory->createFromArray(
+					$reference->getName(),
+					$subDocument,
+				);
+			}
+			else {
+				$referenceDocument = $this->documentFactory->createFromReference($reference);
+			}
 			// @phpstan-ignore offsetAccess.nonOffsetAccessible
 			$schemaId = $referenceDocument->get()['$id'] ?? $reference->getName();
 			// reserve schema to avoid infinite recursion
@@ -74,6 +86,8 @@ final class InlineService
 		$invertedRefs = [];
 		foreach ($document->findAllReferences() as $refPath => $ref) {
 			if ($ref[0] === '#') {
+				$invertedRefs[$ref] ??= [];
+				$invertedRefs[$ref][] = $refPath;
 				continue;
 			}
 			if ($referenceRoot) {

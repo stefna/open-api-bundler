@@ -1,0 +1,155 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "TEST API",
+		"version": "1.0",
+		"contact": {
+			"name": "Stefna ehf",
+			"url": "https://stefna.is",
+			"email": "no-support@stefna.is"
+		}
+	},
+	"paths": {
+		"/tests": {
+			"get": {
+				"operationId": "listTests",
+				"tags": ["Tenants", "Admin"],
+				"responses": {
+					"200": {
+						"description": "ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PaginatedTests"
+								}
+							}
+						}
+					},
+					"400": {"$ref": "#/components/responses/InputError"},
+					"401": {"$ref": "#/components/responses/Unauthorized"},
+					"403": {"$ref": "#/components/responses/Forbidden"},
+					"404": {"$ref": "#/components/responses/NotFound"},
+					"500": {"$ref": "#/components/responses/InternalError"}
+				}
+			}
+		}
+	},
+	"components": {
+		"requestBodies": {},
+		"schemas": {
+			"PaginatedTests": {
+				"type": "object",
+				"readOnly": true,
+				"properties": {
+					"next": {
+						"type": "string",
+						"nullable": true
+					},
+					"previous": {
+						"type": "string",
+						"nullable": true
+					},
+					"total": {
+						"nullable": true,
+						"type": "integer"
+					},
+					"extra": {
+						"nullable": true,
+						"type": "object"
+					},
+					"data": {
+						"type": "array",
+						"items": {
+							"$ref": "models/Test.json"
+						}
+					}
+				}
+			}
+		},
+		"securitySchemes": {
+			"bearer-token": {
+				"type": "http",
+				"scheme": "bearer",
+				"description": "There are 3 types of bearer tokens."
+			}
+		},
+		"responses": {
+			"InternalError": {
+				"description": "Unknown internal error",
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "models/Error.json"
+						}
+					}
+				}
+			},
+			"NotFound": {
+				"description": "Requested resource not found",
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "models/Error.json"
+						}
+					}
+				}
+			},
+			"Unauthorized": {
+				"description": "Need to authenticate to access resource",
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "models/Error.json"
+						}
+					}
+				}
+			},
+			"Forbidden": {
+				"description": "Access denied",
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "models/Error.json"
+						}
+					}
+				}
+			},
+			"InputError": {
+				"description": "Generic input error",
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "models/Error.json"
+						}
+					}
+				}
+			},
+			"GenericError": {
+				"description": "Generic processing error",
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "models/Error.json"
+						}
+					}
+				}
+			},
+			"Redirect": {
+				"description": "Generic redirect response",
+				"headers": {
+					"Location": {
+						"description": "new location for resource",
+						"schema": {
+							"type": "string"
+						}
+					}
+				}
+			}
+		}
+	},
+	"security": [
+		{
+			"bearer-token": []
+		}
+	]
+}

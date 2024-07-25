@@ -1,0 +1,33 @@
+{
+	"type": "object",
+	"properties": {
+		"to": {
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			]
+		},
+		"from": {
+			"type": "string"
+		},
+		"text": {
+			"type": "string"
+		},
+		"validity": {
+			"description": "Number of minutes for the message to be valid",
+			"type": "integer"
+		}
+	},
+	"required": [
+		"to",
+		"from",
+		"text"
+	]
+}
