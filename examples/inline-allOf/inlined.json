@@ -1,16 +1,3 @@
-/opt/projects/stefna/api-clients/tools/open-api-bundler/src/Service/InlineService.php:131:
-array(2) {
-  [0] =>
-  array(1) {
-    'readOnly' =>
-    bool(true)
-  }
-  [1] =>
-  array(1) {
-    '$ref' =>
-    string(13) "sub/Role.json"
-  }
-}
 {
     "title": "Account",
     "type": "object",

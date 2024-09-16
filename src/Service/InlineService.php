@@ -144,7 +144,6 @@ final class InlineService
 	{
 		/** @var list<array{"$ref"?: string, ...}> $allOfDocument */
 		$allOfDocument = $document->get($allOfPath);
-		var_dump($allOfDocument);
 		$mergedSchema = [];
 		foreach ($allOfDocument as $part) {
 			if (isset($part['$ref'])) {
