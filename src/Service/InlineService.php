@@ -72,7 +72,13 @@ final class InlineService
 
 			// update $ref to new ref
 			foreach ($documentPaths as $path) {
-				$document->set($path, $this->components[$type->name][$reference->getName()]);
+				$componentSchema = $this->components[$type->name][$reference->getName()];
+				if (str_contains($path, '/allOf/')) {
+					$path = substr($path, 0, (int)strpos($path, '/allOf/'));
+					$componentSchema = $this->mergeAllOf($path . '/allOf', $document);
+				}
+
+				$document->set($path, $componentSchema);
 			}
 		}
 		return $document;
@@ -129,5 +135,32 @@ final class InlineService
 			$absolutes[] = $part;
 		}
 		return (str_starts_with($path, DIRECTORY_SEPARATOR) ? DIRECTORY_SEPARATOR : '') . implode(DIRECTORY_SEPARATOR, $absolutes);
+	}
+
+	/**
+	 * @return array<string, mixed>
+	 */
+	private function mergeAllOf(string $allOfPath, WritableDocument&Document $document): array
+	{
+		/** @var list<array{"$ref"?: string, ...}> $allOfDocument */
+		$allOfDocument = $document->get($allOfPath);
+		var_dump($allOfDocument);
+		$mergedSchema = [];
+		foreach ($allOfDocument as $part) {
+			if (isset($part['$ref'])) {
+				$reference = Reference::fromString($part['$ref']);
+				foreach ($this->components as $components) {
+					if (isset($components[$reference->getName()]) && is_array($components[$reference->getName()])) {
+						$mergedSchema = array_merge($mergedSchema, $components[$reference->getName()]);
+					}
+				}
+			}
+			else {
+				$mergedSchema = array_merge($mergedSchema, $part);
+			}
+		}
+		// remove original id
+		unset($mergedSchema['$id']);
+		return $mergedSchema;
 	}
 }

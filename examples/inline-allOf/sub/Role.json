@@ -1,0 +1,12 @@
+{
+	"type": "object",
+	"properties": {
+		"name": {
+			"type": "string"
+		},
+		"externalId": {
+			"type": "string",
+			"format": "uuid"
+		}
+	}
+}
