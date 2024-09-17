@@ -1,15 +1,13 @@
 {
 	"type": "object",
 	"properties": {
-		"name": {
+		"sub1": {
 			"type": "string"
 		},
 		"sub2": {
-			"type": "string"
-		},
-		"externalId": {
 			"type": "string",
 			"format": "uuid"
 		}
-	}
+	},
+	"required": ["sub1"]
 }

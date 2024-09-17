@@ -36,6 +36,9 @@
                 "name": {
                     "type": "string"
                 },
+                "sub2": {
+                    "type": "string"
+                },
                 "externalId": {
                     "type": "string",
                     "format": "uuid"
@@ -48,18 +51,29 @@
                 "name": {
                     "type": "string"
                 },
+                "sub2": {
+                    "type": "string",
+                    "format": "uuid"
+                },
                 "externalId": {
                     "type": "string",
                     "format": "uuid"
                 },
+                "sub1": {
+                    "type": "string"
+                },
                 "extraFields": {
                     "type": "string"
                 }
-            }
-        }
-    },
-    "required": [
-        "id",
-        "status"
-    ]
+            },
+            "required": [
+                "sub1",
+                "extraFields"
+            ]
+        },
+        "required": [
+            "id",
+            "status"
+        ]
+    }
 }

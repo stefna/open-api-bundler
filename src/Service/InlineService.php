@@ -7,11 +7,14 @@ use JsonPointer\DocumentFactory;
 use JsonPointer\Reference;
 use JsonPointer\WritableDocument;
 use Stefna\OpenApiBundler\Enums\SchemaType;
+use Stefna\OpenApiBundler\Merger\AllOfMerger;
 
 final class InlineService
 {
 	/** @var array<string, array<string, mixed>> */
 	private array $components = [];
+	/** @var list<string> */
+	private array $allOfPaths = [];
 
 	public function __construct(
 		private readonly DocumentFactory $documentFactory,
@@ -19,10 +22,19 @@ final class InlineService
 
 	public function inline(string $schemaFile): Document
 	{
-		return $this->processDocument(
+		$document = $this->processDocument(
 			$this->documentFactory->createFromFile($schemaFile),
 			$this->documentFactory->findRoot($schemaFile),
 		);
+		$allOfPaths = array_unique($this->allOfPaths);
+		if ($allOfPaths) {
+			$merger = new AllOfMerger($document);
+			foreach ($allOfPaths as $path) {
+				$document->set($path, $merger->merge($path . '/allOf'));
+			}
+		}
+
+		return $document;
 	}
 
 	private function processDocument(
@@ -72,13 +84,10 @@ final class InlineService
 
 			// update $ref to new ref
 			foreach ($documentPaths as $path) {
-				$componentSchema = $this->components[$type->name][$reference->getName()];
 				if (str_contains($path, '/allOf/')) {
-					$path = substr($path, 0, (int)strpos($path, '/allOf/'));
-					$componentSchema = $this->mergeAllOf($path . '/allOf', $document);
+					$this->allOfPaths[] = substr($path, 0, (int)strpos($path, '/allOf/'));
 				}
-
-				$document->set($path, $componentSchema);
+				$document->set($path, $this->components[$type->name][$reference->getName()]);
 			}
 		}
 		return $document;
@@ -135,31 +144,5 @@ final class InlineService
 			$absolutes[] = $part;
 		}
 		return (str_starts_with($path, DIRECTORY_SEPARATOR) ? DIRECTORY_SEPARATOR : '') . implode(DIRECTORY_SEPARATOR, $absolutes);
-	}
-
-	/**
-	 * @return array<string, mixed>
-	 */
-	private function mergeAllOf(string $allOfPath, WritableDocument&Document $document): array
-	{
-		/** @var list<array{"$ref"?: string, ...}> $allOfDocument */
-		$allOfDocument = $document->get($allOfPath);
-		$mergedSchema = [];
-		foreach ($allOfDocument as $part) {
-			if (isset($part['$ref'])) {
-				$reference = Reference::fromString($part['$ref']);
-				foreach ($this->components as $components) {
-					if (isset($components[$reference->getName()]) && is_array($components[$reference->getName()])) {
-						$mergedSchema = array_merge_recursive($mergedSchema, $components[$reference->getName()]);
-					}
-				}
-			}
-			else {
-				$mergedSchema = array_merge_recursive($mergedSchema, $part);
-			}
-		}
-		// remove original id
-		unset($mergedSchema['$id']);
-		return $mergedSchema;
 	}
 }

@@ -1,0 +1,65 @@
+{
+	"title": "Account",
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string",
+			"format": "uuid"
+		},
+		"name": {
+			"type": "string"
+		},
+		"status": {
+			"type": "string",
+			"enum": [
+				"new",
+				"verified",
+				"active",
+				"blocked",
+				"deleted"
+			],
+			"readOnly": true
+		},
+		"createdOn": {
+			"type": "string",
+			"format": "date-time",
+			"readOnly": true
+		},
+		"blockedUntil": {
+			"type": "string",
+			"format": "date-time"
+		},
+		"role": {
+			"allOf": [
+				{
+					"readOnly": true
+				},
+				{
+					"$ref": "sub/Role.json"
+				}
+			]
+		},
+		"complexAllOfMerge": {
+			"allOf": [
+				{
+					"$ref": "sub/Role.json"
+				},
+				{
+					"$ref": "sub/Sub.json"
+				},
+				{
+					"properties": {
+						"extraFields": {
+							"type": "string"
+						}
+					},
+					"required": ["extraFields", "sub1"]
+				}
+			]
+		},
+		"required": [
+			"id",
+			"status"
+		]
+	}
+}
