@@ -41,6 +41,21 @@
                     "format": "uuid"
                 }
             }
+        },
+        "complexAllOfMerge": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "externalId": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "extraFields": {
+                    "type": "string"
+                }
+            }
         }
     },
     "required": [

@@ -26,6 +26,12 @@ properties:
     allOf:
       - readOnly: true
       - $ref: "sub/Role.json"
+  complexAllOfMerge:
+    allOf:
+      - $ref: "sub/Role.json"
+      - properties:
+          extraFields:
+            type: string
 required:
   - id
   - status

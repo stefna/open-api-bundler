@@ -150,12 +150,12 @@ final class InlineService
 				$reference = Reference::fromString($part['$ref']);
 				foreach ($this->components as $components) {
 					if (isset($components[$reference->getName()]) && is_array($components[$reference->getName()])) {
-						$mergedSchema = array_merge($mergedSchema, $components[$reference->getName()]);
+						$mergedSchema = array_merge_recursive($mergedSchema, $components[$reference->getName()]);
 					}
 				}
 			}
 			else {
-				$mergedSchema = array_merge($mergedSchema, $part);
+				$mergedSchema = array_merge_recursive($mergedSchema, $part);
 			}
 		}
 		// remove original id
