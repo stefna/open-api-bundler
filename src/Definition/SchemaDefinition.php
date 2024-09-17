@@ -49,10 +49,11 @@ class SchemaDefinition extends Definition
 		$root = rtrim($root, DIRECTORY_SEPARATOR);
 		/** @var string $schema */
 		$schema = $input->getArgument(self::SCHEMA);
-		$schema = $this->resolveSchema($schema, $root);
 		if (!$root) {
 			$root = dirname($schema);
+			$schema = basename($schema);
 		}
+		$schema = $this->resolveSchema($schema, $root);
 
 		$compress = null;
 		if ($input->getOption(self::COMPRESSION)) {
