@@ -36,8 +36,18 @@ class SchemaDefinition extends Definition
 		);
 		$this->addArgument(self::OUTPUT, InputArgument::OPTIONAL, 'Output file. If not set prints to STDOUT');
 
-		$this->addOption(self::COMPRESSION, null,InputOption::VALUE_NONE, 'Remove white space from output');
-		$this->addOption(self::ROOT, null,InputOption::VALUE_REQUIRED, 'Root directory. If not set uses folder of schema');
+		$this->addOption(
+			self::COMPRESSION,
+			null,
+			InputOption::VALUE_NONE,
+			'Remove white space from output',
+		);
+		$this->addOption(
+			self::ROOT,
+			null,
+			InputOption::VALUE_REQUIRED,
+			'Root directory. If not set uses folder of schema',
+		);
 
 		$this->setCommand($this->commandClass);
 	}

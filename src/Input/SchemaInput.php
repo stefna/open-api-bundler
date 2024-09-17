@@ -7,7 +7,7 @@ use Circli\Console\AbstractInput;
 final class SchemaInput extends AbstractInput
 {
 	public function __construct(
-		public ?string $schema,
+		public string $schema,
 		public ?string $outputFile,
 		public ?bool $compress,
 		public string $root,

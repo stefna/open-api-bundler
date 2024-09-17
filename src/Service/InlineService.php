@@ -45,8 +45,9 @@ final class InlineService
 			$reference = Reference::fromString($ref);
 			$type = $this->resolveSchemaType($documentPaths);
 
-			if (isset($this->components[$type->name][$reference->getName()]) &&
-				$this->components[$type->name][$reference->getName()]
+			if (
+				isset($this->components[$type->name][$reference->getName()])
+				&& $this->components[$type->name][$reference->getName()]
 			) {
 				$schema = $this->components[$type->name][$reference->getName()];
 				if (is_string($schema)) {

@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 final readonly class InlineCommand
 {
 	public function __construct(
-		private ?SchemaConfig $config = null
+		private ?SchemaConfig $config = null,
 	) {}
 
 	public function __invoke(SchemaInput $input, OutputInterface $output): int
