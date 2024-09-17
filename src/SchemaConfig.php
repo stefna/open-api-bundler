@@ -7,5 +7,7 @@ final readonly class SchemaConfig
 	public function __construct(
 		public ?string $output,
 		public bool $compress = false,
+		public ?string $root = null,
+		public ?string $defaultSchema = null,
 	) {}
 }

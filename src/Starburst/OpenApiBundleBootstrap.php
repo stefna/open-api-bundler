@@ -11,12 +11,14 @@ use Stefna\DependencyInjection\Helper\Autowire;
 use Stefna\OpenApiBundler\Command\BundleCommand;
 use Stefna\OpenApiBundler\Command\InlineCommand;
 use Stefna\OpenApiBundler\Definition\SchemaDefinition;
+use Stefna\OpenApiBundler\Starburst\Definition\BundleDefinition;
 
 final class OpenApiBundleBootstrap implements Bootloader, CliCommandProvider, DefinitionProvider
 {
 	public function createDefinitionSource(): DefinitionSource
 	{
 		return new DefinitionArray([
+			BundleDefinition::class => Autowire::cls(),
 			BundleCommand::class => Autowire::cls(),
 			InlineCommand::class => Autowire::cls(),
 		]);
@@ -25,8 +27,8 @@ final class OpenApiBundleBootstrap implements Bootloader, CliCommandProvider, De
 	public function createCliDefinitions(): array
 	{
 		return [
-			new SchemaDefinition('bundle', BundleCommand::class),
-			new SchemaDefinition('inline', InlineCommand::class),
+			BundleDefinition::class,
+			new SchemaDefinition('inline', InlineCommand::class, true),
 		];
 	}
 }

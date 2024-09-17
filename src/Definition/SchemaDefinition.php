@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class SchemaDefinition extends Definition
+class SchemaDefinition extends Definition
 {
 	public const NAME = 'schema:';
 	public const SCHEMA = 'schema';
@@ -18,8 +18,9 @@ final class SchemaDefinition extends Definition
 	public const ROOT = 'root';
 
 	public function __construct(
-		private string $name,
-		private string|object $commandClass,
+		private readonly string $name,
+		private readonly string|object $commandClass,
+		private readonly bool $optionalSchema = false,
 	) {
 		parent::__construct();
 	}
@@ -28,7 +29,11 @@ final class SchemaDefinition extends Definition
 	{
 		$this->setName(self::NAME . $this->name);
 
-		$this->addArgument(self::SCHEMA, InputArgument::REQUIRED, 'Schema to bundle');
+		$this->addArgument(
+			self::SCHEMA,
+			$this->optionalSchema ? InputArgument::OPTIONAL : InputArgument::REQUIRED,
+			'Schema to bundle',
+		);
 		$this->addArgument(self::OUTPUT, InputArgument::OPTIONAL, 'Output file. If not set prints to STDOUT');
 
 		$this->addOption(self::COMPRESSION, null,InputOption::VALUE_NONE, 'Remove white space from output');
@@ -39,10 +44,33 @@ final class SchemaDefinition extends Definition
 
 	public function transformInput(InputInterface $input, OutputInterface $output): InputInterface
 	{
-		/** @var string $schema */
-		$schema = $input->getArgument(self::SCHEMA);
 		/** @var string $root */
 		$root = $input->getOption(self::ROOT) ?? '';
+		$root = rtrim($root, DIRECTORY_SEPARATOR);
+		/** @var string $schema */
+		$schema = $input->getArgument(self::SCHEMA);
+		$schema = $this->resolveSchema($schema, $root);
+		if (!$root) {
+			$root = dirname($schema);
+		}
+
+		$compress = null;
+		if ($input->getOption(self::COMPRESSION)) {
+			$compress = true;
+		}
+
+		/** @var string|null $outputFile */
+		$outputFile = $input->getArgument(self::OUTPUT);
+		return new SchemaInput(
+			$schema,
+			$outputFile,
+			$compress,
+			$root,
+		);
+	}
+
+	protected function resolveSchema(string $schema, string $root): string
+	{
 		$root = rtrim($root, DIRECTORY_SEPARATOR);
 		if (!file_exists($schema)) {
 			$pathsToCheck = [
@@ -64,23 +92,10 @@ final class SchemaDefinition extends Definition
 		elseif (!str_starts_with($schema, '/')) {
 			$schema = getcwd() . DIRECTORY_SEPARATOR . $schema;
 		}
-		$compress = null;
-		if ($input->getOption(self::COMPRESSION)) {
-			$compress = true;
-		}
 
 		if (!$root) {
 			$root = dirname($schema);
 		}
-		$schema = str_replace($root . DIRECTORY_SEPARATOR, '', $schema);
-
-		/** @var string|null $outputFile */
-		$outputFile = $input->getArgument(self::OUTPUT);
-		return new SchemaInput(
-			$schema,
-			$outputFile,
-			$compress,
-			$root,
-		);
+		return str_replace($root . DIRECTORY_SEPARATOR, '', $schema);
 	}
 }
