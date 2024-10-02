@@ -22,6 +22,7 @@ final class InlineService
 
 	public function inline(string $schemaFile): Document
 	{
+		$this->components = [];
 		$this->allOfPaths = [];
 		$document = $this->processDocument(
 			$this->documentFactory->createFromFile($schemaFile),
