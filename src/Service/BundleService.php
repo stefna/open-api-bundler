@@ -49,6 +49,7 @@ final class BundleService
 				if (str_starts_with($documentPaths[0], '/paths/') && substr_count($documentPaths[0], '/') === 2) {
 					$customInlining[] = $path;
 					$typeKey = 'inlining';
+					$schemaName = md5($reference->getPath());
 					continue;
 				}
 				$document->set($path, ['$ref' => match ($type) {
