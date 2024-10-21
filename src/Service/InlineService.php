@@ -46,12 +46,13 @@ final class InlineService
 		foreach ($this->findReferences($document, $referenceRoot) as $ref => $documentPaths) {
 			$reference = Reference::fromString($ref);
 			$type = $this->resolveSchemaType($documentPaths);
+			$refName = $type === SchemaType::Paths ? md5($reference->getPath()) : $reference->getName();
 
 			if (
-				isset($this->components[$type->name][$reference->getName()])
-				&& $this->components[$type->name][$reference->getName()]
+				isset($this->components[$type->name][$refName])
+				&& $this->components[$type->name][$refName]
 			) {
-				$schema = $this->components[$type->name][$reference->getName()];
+				$schema = $this->components[$type->name][$refName];
 				if (is_string($schema)) {
 					$schema = ['$ref' => $schema];
 				}
@@ -67,7 +68,7 @@ final class InlineService
 					throw new \BadMethodCallException('Failed to resolve internal model properly');
 				}
 				$referenceDocument = $this->documentFactory->createFromArray(
-					$reference->getName(),
+					$refName,
 					$subDocument,
 				);
 			}
@@ -75,22 +76,22 @@ final class InlineService
 				$referenceDocument = $this->documentFactory->createFromReference($reference);
 			}
 			// @phpstan-ignore offsetAccess.nonOffsetAccessible
-			$schemaId = $referenceDocument->get()['$id'] ?? $reference->getName();
+			$schemaId = $referenceDocument->get()['$id'] ?? $refName;
 			// reserve schema to avoid infinite recursion
-			$this->components[$type->name][$reference->getName()] = $schemaId;
-			$this->components[$type->name][$reference->getName()] = $this->processDocument(
+			$this->components[$type->name][$refName] = $schemaId;
+			$this->components[$type->name][$refName] = $this->processDocument(
 				$referenceDocument,
 				$this->documentFactory->findRoot($reference),
 			)->get();
 			// @phpstan-ignore offsetAccess.nonOffsetAccessible
-			$this->components[$type->name][$reference->getName()]['$id'] = $schemaId;
+			$this->components[$type->name][$refName]['$id'] = $schemaId;
 
 			// update $ref to new ref
 			foreach ($documentPaths as $path) {
 				if (str_contains($path, '/allOf/')) {
 					$this->allOfPaths[] = substr($path, 0, (int)strpos($path, '/allOf/'));
 				}
-				$document->set($path, $this->components[$type->name][$reference->getName()]);
+				$document->set($path, $this->components[$type->name][$refName]);
 			}
 		}
 		return $document;
@@ -126,6 +127,9 @@ final class InlineService
 		foreach ($documentPaths as $path) {
 			if (str_ends_with($path, 'requestBody')) {
 				return SchemaType::RequestBodies;
+			}
+			if (str_starts_with($documentPaths[0], '/paths/') && substr_count($documentPaths[0], '/') === 2) {
+				return SchemaType::Paths;
 			}
 		}
 		return SchemaType::Schema;

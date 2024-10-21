@@ -8,4 +8,5 @@ enum SchemaType
 	case RequestBodies;
 	case Responses;
 	case Parameters;
+	case Paths;
 }

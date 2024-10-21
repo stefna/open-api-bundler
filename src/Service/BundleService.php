@@ -46,9 +46,8 @@ final class BundleService
 
 			// update $ref to new ref
 			foreach ($documentPaths as $path) {
-				if (str_starts_with($documentPaths[0], '/paths/') && substr_count($documentPaths[0], '/') === 2) {
+				if ($type === SchemaType::Paths) {
 					$customInlining[] = $path;
-					$typeKey = 'inlining';
 					$schemaName = md5($reference->getPath());
 					continue;
 				}
@@ -84,6 +83,9 @@ final class BundleService
 	 */
 	private function processInternalSchemas(SchemaType $type, WritableDocument&Document $document): array
 	{
+		if ($type === SchemaType::Paths) {
+			return [];
+		}
 		$path = match ($type) {
 			SchemaType::Schema => '/components/schemas',
 			SchemaType::RequestBodies => '/components/requestBodies',
@@ -112,6 +114,7 @@ final class BundleService
 	{
 		foreach (SchemaType::cases() as $type) {
 			$pathKey = match ($type) {
+				SchemaType::Paths => 'paths',
 				SchemaType::Schema => 'schemas',
 				SchemaType::RequestBodies => 'requestBodies',
 				SchemaType::Responses => 'responses',
@@ -165,6 +168,9 @@ final class BundleService
 				!str_contains($path, '/content/')
 			) {
 				return SchemaType::Responses;
+			}
+			if (str_starts_with($documentPaths[0], '/paths/') && substr_count($documentPaths[0], '/') === 2) {
+				return SchemaType::Paths;
 			}
 			// Disabled for now. Need more testing for side effects
 			// if (str_contains($path, '/parameters/')) {
