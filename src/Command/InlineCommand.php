@@ -2,7 +2,9 @@
 
 namespace Stefna\OpenApiBundler\Command;
 
-use JsonPointer\DocumentFactory;
+use JsonPointer\ReferenceResolver\FileReferenceResolver;
+use JsonPointer\ReferenceResolver\ReferenceResolver;
+use JsonPointer\ReferenceResolver\ReferenceResolverCollection;
 use Stefna\OpenApiBundler\SchemaConfig;
 use Stefna\OpenApiBundler\Input\SchemaInput;
 use Stefna\OpenApiBundler\Service\InlineService;
@@ -10,13 +12,27 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final readonly class InlineCommand
 {
+	private ReferenceResolverCollection $referenceResolver;
+
 	public function __construct(
 		private ?SchemaConfig $config = null,
-	) {}
+		?ReferenceResolver $referenceResolver = null,
+	) {
+		if (!$referenceResolver instanceof ReferenceResolverCollection) {
+			$this->referenceResolver = new ReferenceResolverCollection();
+			if ($referenceResolver) {
+				$this->referenceResolver->addResolver($referenceResolver);
+			}
+		}
+		else {
+			$this->referenceResolver = $referenceResolver;
+		}
+	}
 
 	public function __invoke(SchemaInput $input, OutputInterface $output): int
 	{
-		$service = new InlineService(new DocumentFactory($input->root . DIRECTORY_SEPARATOR));
+		$this->referenceResolver->addResolver(new FileReferenceResolver($input->root . DIRECTORY_SEPARATOR));
+		$service = new InlineService($this->referenceResolver);
 
 		$outputFile = $input->outputFile;
 		if (!$outputFile && $this->config?->output) {
@@ -26,7 +42,7 @@ final readonly class InlineCommand
 		if ($outputFile) {
 			$output->writeln('Inlining: ' . $input->schema);
 		}
-		$content = $service->inline($input->schema);
+		$content = $service->inline($input->root . DIRECTORY_SEPARATOR . $input->schema);
 
 		$flags = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
 		if (!($input->compress ?? $this->config?->compress)) {

@@ -2,9 +2,11 @@
 
 namespace Stefna\OpenApiBundler\Service;
 
+use JsonPointer\BasicDocument;
 use JsonPointer\Document;
 use JsonPointer\DocumentFactory;
 use JsonPointer\Reference;
+use JsonPointer\ReferenceResolver\ReferenceResolver;
 use JsonPointer\WritableDocument;
 use Stefna\OpenApiBundler\Enums\SchemaType;
 use Stefna\OpenApiBundler\Merger\AllOfMerger;
@@ -16,9 +18,13 @@ final class InlineService
 	/** @var list<string> */
 	private array $allOfPaths = [];
 
+	private readonly DocumentFactory $documentFactory;
+
 	public function __construct(
-		private readonly DocumentFactory $documentFactory,
-	) {}
+		private readonly ReferenceResolver $referenceResolver,
+	) {
+		$this->documentFactory = new DocumentFactory();
+	}
 
 	public function inline(string $schemaFile): Document
 	{
@@ -26,7 +32,6 @@ final class InlineService
 		$this->allOfPaths = [];
 		$document = $this->processDocument(
 			$this->documentFactory->createFromFile($schemaFile),
-			$this->documentFactory->findRoot($schemaFile),
 		);
 		$allOfPaths = array_unique($this->allOfPaths);
 		if ($allOfPaths) {
@@ -41,9 +46,9 @@ final class InlineService
 
 	private function processDocument(
 		Document&WritableDocument $document,
-		?string $referenceRoot = null,
+		?Reference $rootReference = null,
 	): Document&WritableDocument {
-		foreach ($this->findReferences($document, $referenceRoot) as $ref => $documentPaths) {
+		foreach ($this->findReferences($document, $rootReference) as $ref => $documentPaths) {
 			$reference = Reference::fromString($ref);
 			$type = $this->resolveSchemaType($documentPaths);
 			$refName = $type === SchemaType::Paths ? md5($reference->getPath()) : $reference->getName();
@@ -73,7 +78,7 @@ final class InlineService
 				);
 			}
 			else {
-				$referenceDocument = $this->documentFactory->createFromReference($reference);
+				$referenceDocument = BasicDocument::fromDocument($this->referenceResolver->resolve($reference));
 			}
 			// @phpstan-ignore offsetAccess.nonOffsetAccessible
 			$schemaId = $referenceDocument->get()['$id'] ?? $refName;
@@ -81,7 +86,7 @@ final class InlineService
 			$this->components[$type->name][$refName] = $schemaId;
 			$this->components[$type->name][$refName] = $this->processDocument(
 				$referenceDocument,
-				$this->documentFactory->findRoot($reference),
+				$reference,
 			)->get();
 			// @phpstan-ignore offsetAccess.nonOffsetAccessible
 			$this->components[$type->name][$refName]['$id'] = $schemaId;
@@ -100,8 +105,9 @@ final class InlineService
 	/**
 	 * @return array<string, list<string>>
 	 */
-	private function findReferences(WritableDocument&Document $document, ?string $referenceRoot = null): array
+	private function findReferences(WritableDocument&Document $document, ?Reference $rootReference = null): array
 	{
+		$rootPath = $rootReference?->getRoot();
 		$invertedRefs = [];
 		foreach ($document->findAllReferences() as $refPath => $ref) {
 			if ($ref[0] === '#') {
@@ -109,8 +115,8 @@ final class InlineService
 				$invertedRefs[$ref][] = $refPath;
 				continue;
 			}
-			if ($referenceRoot) {
-				$ref = $this->virtualPath($referenceRoot . '/' . $ref);
+			if ($ref[0] !== '@') {
+				$ref = $rootPath ? $rootPath . '/' . $ref : $ref;
 			}
 			$invertedRefs[$ref] ??= [];
 			$invertedRefs[$ref][] = $refPath;
@@ -133,23 +139,5 @@ final class InlineService
 			}
 		}
 		return SchemaType::Schema;
-	}
-
-	private function virtualPath(string $path): string
-	{
-		$path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
-		$parts = array_filter(explode(DIRECTORY_SEPARATOR, $path));
-		$absolutes = [];
-		foreach ($parts as $part) {
-			if ('.' === $part) {
-				continue;
-			}
-			if ('..' === $part) {
-				array_pop($absolutes);
-				continue;
-			}
-			$absolutes[] = $part;
-		}
-		return (str_starts_with($path, DIRECTORY_SEPARATOR) ? DIRECTORY_SEPARATOR : '') . implode(DIRECTORY_SEPARATOR, $absolutes);
 	}
 }

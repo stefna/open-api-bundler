@@ -2,9 +2,11 @@
 
 namespace Stefna\OpenApiBundler\Service;
 
+use JsonPointer\BasicDocument;
 use JsonPointer\Document;
 use JsonPointer\DocumentFactory;
 use JsonPointer\Reference;
+use JsonPointer\ReferenceResolver\ReferenceResolver;
 use JsonPointer\WritableDocument;
 use Stefna\OpenApiBundler\Enums\SchemaType;
 
@@ -12,10 +14,13 @@ final class BundleService
 {
 	/** @var array<string, array<string, mixed>> */
 	private array $components = [];
+	private readonly DocumentFactory $documentFactory;
 
 	public function __construct(
-		private readonly DocumentFactory $documentFactory,
-	) {}
+		private readonly ReferenceResolver $referenceResolver,
+	) {
+		$this->documentFactory = new DocumentFactory();
+	}
 
 	public function bundle(string $schemaFile): Document
 	{
@@ -35,9 +40,9 @@ final class BundleService
 
 	private function processDocument(
 		Document&WritableDocument $document,
-		?string $referenceRoot = null,
+		?Reference $rootReference = null,
 	): Document&WritableDocument {
-		foreach ($this->findReferences($document, $referenceRoot) as $ref => $documentPaths) {
+		foreach ($this->findReferences($document, $rootReference) as $ref => $documentPaths) {
 			$reference = Reference::fromString($ref);
 			$schemaName = $this->getSchemaName($reference);
 			$type = $this->resolveSchemaType($documentPaths);
@@ -66,8 +71,8 @@ final class BundleService
 			// reserve schema to avoid infinite recursion
 			$this->components[$typeKey][$schemaName] = true;
 			$this->components[$typeKey][$schemaName] = $this->processDocument(
-				$this->documentFactory->createFromReference($reference),
-				dirname($reference->getUri()),
+				BasicDocument::fromDocument($this->referenceResolver->resolve($reference)),
+				$reference,
 			)->get();
 			if ($customInlining) {
 				foreach ($customInlining as $path) {
@@ -137,15 +142,16 @@ final class BundleService
 	/**
 	 * @return array<string, list<string>>
 	 */
-	private function findReferences(WritableDocument&Document $document, ?string $referenceRoot = null): array
+	private function findReferences(WritableDocument&Document $document, ?Reference $rootReference = null): array
 	{
+		$rootPath = $rootReference?->getRoot();
 		$invertedRefs = [];
 		foreach ($document->findAllReferences() as $refPath => $ref) {
 			if ($ref[0] === '#') {
 				continue;
 			}
-			if ($referenceRoot) {
-				$ref = $this->virtualPath($referenceRoot . '/' . $ref);
+			if ($ref[0] !== '@') {
+				$ref = $rootPath ? $rootPath . '/' . $ref : $ref;
 			}
 			$invertedRefs[$ref] ??= [];
 			$invertedRefs[$ref][] = $refPath;
@@ -178,24 +184,6 @@ final class BundleService
 			// }
 		}
 		return SchemaType::Schema;
-	}
-
-	private function virtualPath(string $path): string
-	{
-		$path = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $path);
-		$parts = array_filter(explode(DIRECTORY_SEPARATOR, $path));
-		$absolutes = [];
-		foreach ($parts as $part) {
-			if ('.' === $part) {
-				continue;
-			}
-			if ('..' === $part) {
-				array_pop($absolutes);
-				continue;
-			}
-			$absolutes[] = $part;
-		}
-		return (str_starts_with($path, DIRECTORY_SEPARATOR) ? DIRECTORY_SEPARATOR : '') . implode(DIRECTORY_SEPARATOR, $absolutes);
 	}
 
 	private function getSchemaName(Reference $reference): string
