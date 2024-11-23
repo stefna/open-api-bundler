@@ -1,0 +1,8 @@
+{
+	"sub": {
+		"$ref": "sub/Category.yaml"
+	},
+	"error": {
+		"$ref": "@stefna/random:schema/Package"
+	}
+}

@@ -16,28 +16,14 @@
                 "operationId": "createSite",
                 "summary": "Register new site",
                 "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Site"
-                            }
-                        }
-                    }
+                    "$ref": "#/components/requestBodies/CreateSitePayload"
                 },
                 "responses": {
                     "default": {
                         "description": "ok"
                     },
                     "201": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Site"
-                                }
-                            }
-                        }
+                        "$ref": "#/components/responses/SiteResponse"
                     },
                     "400": {
                         "$ref": "#/components/responses/InputError"
@@ -54,6 +40,16 @@
                     "application/json": {
                         "schema": {
                             "$ref": "#/components/schemas/ErrorException"
+                        }
+                    }
+                }
+            },
+            "SiteResponse": {
+                "description": "OK",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Site"
                         }
                     }
                 }
@@ -91,6 +87,18 @@
                             "message": {
                                 "type": "string"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "requestBodies": {
+            "CreateSitePayload": {
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Site"
                         }
                     }
                 }
