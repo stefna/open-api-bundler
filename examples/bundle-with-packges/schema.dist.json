@@ -1,0 +1,173 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Api",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "description": "production",
+            "url": "..."
+        }
+    ],
+    "paths": {
+        "/authenicate": {
+            "post": {
+                "operationId": "initAudkenniAuthenticate",
+                "tags": [
+                    "authAudkenni"
+                ],
+                "summary": "Start authentication process with Audkenni. Requires an access token for the Stefna API.",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/InitAuthModel"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/InputError"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/Unauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/Forbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalError"
+                    }
+                },
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/AuthenticatePayload"
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "InitAuthModel": {
+                "type": "object",
+                "properties": {
+                    "authUrl": {
+                        "description": "Url to the login portal.",
+                        "type": "string"
+                    },
+                    "requestId": {
+                        "type": "string"
+                    },
+                    "statusPath": {
+                        "description": "The path to query to get information about the status of the authentication request.",
+                        "type": "string"
+                    },
+                    "bearerToken": {
+                        "description": "Authorization token to access the path defined in <statusPath>.",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "authUrl",
+                    "requestId",
+                    "statusPath",
+                    "bearerToken"
+                ]
+            },
+            "Error": {
+                "title": "Generic Error Object",
+                "type": "object",
+                "readOnly": true,
+                "properties": {
+                    "messages": {
+                        "type": "string"
+                    }
+                }
+            },
+            "InitAuthInput": {
+                "type": "object",
+                "properties": {
+                    "redirectUri": {
+                        "type": "string",
+                        "description": "Custom redirect url to return to after successfully authenticating."
+                    },
+                    "message": {
+                        "type": "string",
+                        "description": "The message that the user receives during authentication",
+                        "default": "Login to Audkenni"
+                    }
+                }
+            }
+        },
+        "requestBodies": {
+            "AuthenticatePayload": {
+                "description": "Init auth payload",
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/InitAuthInput"
+                        }
+                    }
+                }
+            }
+        },
+        "responses": {
+            "InputError": {
+                "description": "Input error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                }
+            },
+            "Unauthorized": {
+                "description": "Need to authenticate to access resource",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                }
+            },
+            "Forbidden": {
+                "description": "Access denied",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                }
+            },
+            "NotFound": {
+                "description": "Requested resource not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                }
+            },
+            "InternalError": {
+                "description": "Unknown internal error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
