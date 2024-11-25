@@ -1,0 +1,5 @@
+{
+	"AudkenniAuthenticate": {
+		"$ref": "schema/authenticate-path.json"
+	}
+}

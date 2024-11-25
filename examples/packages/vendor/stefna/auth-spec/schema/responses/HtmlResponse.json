@@ -1,0 +1,10 @@
+{
+	"description": "HTML response",
+	"content": {
+		"text/html": {
+			"schema": {
+				"type": "string"
+			}
+		}
+	}
+}
