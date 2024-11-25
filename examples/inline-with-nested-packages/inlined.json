@@ -1,90 +1,53 @@
 {
-    "title": "Account",
-    "type": "object",
-    "properties": {
-        "id": {
-            "type": "string",
-            "format": "uuid"
-        },
-        "name": {
-            "type": "string"
-        },
-        "status": {
-            "type": "string",
-            "enum": [
-                "new",
-                "verified",
-                "active",
-                "blocked",
-                "deleted"
-            ],
-            "readOnly": true
-        },
-        "createdOn": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-        },
-        "blockedUntil": {
-            "type": "string",
-            "format": "date-time"
-        },
-        "category": {
-            "title": "Category",
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string",
-                    "format": "uuid"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "createdOn": {
-                    "type": "string",
-                    "format": "date-time",
-                    "readOnly": true
-                },
-                "modifiedOn": {
-                    "type": "string",
-                    "format": "date-time",
-                    "readOnly": true
-                },
-                "role": {
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "type": "string"
-                        },
-                        "externalId": {
-                            "type": "string",
-                            "format": "uuid"
-                        }
+    "sub": {
+        "title": "Category",
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "string",
+                "format": "uuid"
+            },
+            "name": {
+                "type": "string"
+            },
+            "createdOn": {
+                "type": "string",
+                "format": "date-time",
+                "readOnly": true
+            },
+            "modifiedOn": {
+                "type": "string",
+                "format": "date-time",
+                "readOnly": true
+            },
+            "role": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
                     },
-                    "$id": "Role.json"
+                    "externalId": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
                 },
-                "parent": {
-                    "$ref": "Category.yaml"
-                }
-            },
-            "$id": "Category.yaml"
+                "$id": "Role.json"
+            }
         },
-        "role": {
+        "$id": "Category.yaml"
+    },
+    "error": {
+        "error": {
+            "title": "Generic Error Object",
             "type": "object",
+            "readOnly": true,
             "properties": {
-                "name": {
+                "messages": {
                     "type": "string"
-                },
-                "externalId": {
-                    "type": "string",
-                    "format": "uuid"
                 }
             },
-            "$id": "Role.json"
-        }
-    },
-    "required": [
-        "id",
-        "status"
-    ]
+            "$id": "Error"
+        },
+        "$id": "Package"
+    }
 }
