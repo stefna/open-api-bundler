@@ -1,6 +1,7 @@
 #!/usr/bin/env php
 <?php
 
+use JsonPointer\ReferenceResolver\PackageVendorReferenceResolver;
 use Stefna\OpenApiBundler\Application;
 use Stefna\OpenApiBundler\Command\InlineCommand;
 use Stefna\OpenApiBundler\Definition\SchemaDefinition;
@@ -37,7 +38,7 @@ $version = '0.0.0';
 $composerRoot = dirname(__DIR__) . '/examples/packages/vendor';
 $nodeRoot = dirname(__DIR__) . '/examples/packages/test_node_modules';
 
-$packageRefResolver = new \JsonPointer\ReferenceResolver\PackageVendorReferenceResolver();
+$packageRefResolver = new PackageVendorReferenceResolver();
 $packageRefResolver->addVendorFolder('php', $composerRoot);
 $packageRefResolver->addVendorFolder('node', $nodeRoot);
 
