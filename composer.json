@@ -11,7 +11,7 @@
 	],
 	"require": {
 		"php": "^8.2",
-		"stefna/json-pointer": "^2.2",
+		"stefna/json-pointer": "^2.6",
 		"psr/log": "^1.1 || ^2.0 || ^3.0",
 		"circli/console": "^2.0.0"
 	},
