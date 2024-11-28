@@ -53,7 +53,7 @@ final class BundleService
 			foreach ($documentPaths as $path) {
 				if ($type === SchemaType::Paths) {
 					$customInlining[] = $path;
-					$schemaName = md5($reference->getPath());
+					$schemaName = md5($reference->getUri() ?: $reference->getPath());
 					continue;
 				}
 				$document->set($path, ['$ref' => match ($type) {
