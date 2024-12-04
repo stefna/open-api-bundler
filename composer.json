@@ -19,11 +19,17 @@
 		"stefna/codestyle": "^1.17",
 		"phpstan/phpstan": "^2.0",
 		"starburst/contract": "^1.0",
-		"stefna/di": "^1.0"
+		"stefna/di": "^1.0",
+		"phpunit/phpunit": "^11.4"
 	},
 	"autoload": {
 		"psr-4": {
 			"Stefna\\OpenApiBundler\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Stefna\\OpenApiBundler\\Tests\\": "tests/"
 		}
 	},
 	"bin": [
