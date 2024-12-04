@@ -16,8 +16,8 @@
 		"circli/console": "^2.0.0"
 	},
 	"require-dev": {
-		"stefna/codestyle": "^1.12.1",
-		"phpstan/phpstan": "^1.10",
+		"stefna/codestyle": "^1.17",
+		"phpstan/phpstan": "^2.0",
 		"starburst/contract": "^1.0",
 		"stefna/di": "^1.0"
 	},

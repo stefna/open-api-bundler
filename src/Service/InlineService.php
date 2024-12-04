@@ -74,13 +74,12 @@ final class InlineService
 				}
 				$referenceDocument = $this->documentFactory->createFromArray(
 					$refName,
-					$subDocument,
+					$subDocument, // @phpstan-ignore argument.type
 				);
 			}
 			else {
 				$referenceDocument = BasicDocument::fromDocument($this->referenceResolver->resolve($reference));
 			}
-			// @phpstan-ignore offsetAccess.nonOffsetAccessible
 			$schemaId = $referenceDocument->get()['$id'] ?? $refName;
 			// reserve schema to avoid infinite recursion
 			$this->components[$type->name][$refName] = $schemaId;
@@ -88,7 +87,6 @@ final class InlineService
 				$referenceDocument,
 				$reference,
 			)->get();
-			// @phpstan-ignore offsetAccess.nonOffsetAccessible
 			$this->components[$type->name][$refName]['$id'] = $schemaId;
 
 			// update $ref to new ref

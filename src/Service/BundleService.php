@@ -56,12 +56,14 @@ final class BundleService
 					$schemaName = md5($reference->getUri() ?: $reference->getPath());
 					continue;
 				}
-				$document->set($path, ['$ref' => match ($type) {
-					SchemaType::Schema => '#/components/schemas/' . $schemaName,
-					SchemaType::RequestBodies => '#/components/requestBodies/' . $schemaName,
-					SchemaType::Responses => '#/components/responses/' . $schemaName,
-					SchemaType::Parameters => '#/components/parameters/' . $schemaName,
-				}]);
+				$document->set($path, [
+					'$ref' => match ($type) {
+						SchemaType::Schema => '#/components/schemas/' . $schemaName,
+						SchemaType::RequestBodies => '#/components/requestBodies/' . $schemaName,
+						SchemaType::Responses => '#/components/responses/' . $schemaName,
+						SchemaType::Parameters => '#/components/parameters/' . $schemaName,
+					},
+				]);
 			}
 
 			if (isset($this->components[$typeKey][$schemaName])) {

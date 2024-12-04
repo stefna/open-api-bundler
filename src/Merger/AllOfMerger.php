@@ -25,6 +25,7 @@ final readonly class AllOfMerger
 				if (!$reference->isInternal()) {
 					throw new \RuntimeException('Need to resolve external $ref before doing merge');
 				}
+				/** @var array<string, mixed>|null $part */
 				$part = $this->document->get($reference->getPath());
 				if (!is_array($part)) {
 					throw new \BadMethodCallException('Failed to resolve internal reference: ' . $reference->getName());
@@ -34,6 +35,7 @@ final readonly class AllOfMerger
 				$mergedSchema = $part;
 				continue;
 			}
+			/** @var array<string, mixed> $mergedSchema */
 			$mergedSchema = $this->mergeArray($mergedSchema, $part);
 		}
 		// remove original id
@@ -53,17 +55,19 @@ final readonly class AllOfMerger
 				$root[$key] = $value;
 				continue;
 			}
+			/** @var array<string, mixed> $value */
 
 			if (!is_array($root[$key])) {
 				throw new \RuntimeException('Can\'t merge array with ' . get_debug_type($root[$key]));
 			}
 
-			if (array_is_list($root[$key])) {
+			$rootValue = $root[$key];
+			if (array_is_list($rootValue)) {
 				$root[$key] = array_unique(array_merge($root[$key], $value));
 				continue;
 			}
-
-			$root[$key] = $this->mergeArray($root[$key], $value);
+			/** @var array<string, mixed> $rootValue */
+			$root[$key] = $this->mergeArray($rootValue, $value);
 		}
 
 		return $root;

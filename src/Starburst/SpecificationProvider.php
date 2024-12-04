@@ -10,5 +10,5 @@ interface SpecificationProvider
 	public function configureSpecificationResolvers(
 		PackageVendorReferenceResolver $referenceResolver,
 		ReferenceResolverCollection $resolverCollection,
-	) : void;
+	): void;
 }
