@@ -1,6 +1,6 @@
 {
 	"name": "stefna/open-api-bundler",
-	"description": "Cli tool to help bin/bundle open api specifications",
+	"description": "Cli tool to help inline/bundle open api specifications",
 	"license": "MIT",
 	"type": "library",
 	"authors": [
@@ -11,7 +11,7 @@
 	],
 	"require": {
 		"php": "^8.2",
-		"stefna/json-pointer": "^2.6",
+		"stefna/json-pointer": "^2.7",
 		"psr/log": "^1.1 || ^2.0 || ^3.0",
 		"circli/console": "^2.0.0"
 	},
