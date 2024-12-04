@@ -120,7 +120,7 @@ final class InlineService
 			$invertedRefs[$ref][] = $refPath;
 		}
 
-		return $invertedRefs;
+		return array_reverse($invertedRefs);
 	}
 
 	/**
