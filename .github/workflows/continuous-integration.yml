@@ -1,0 +1,101 @@
+name: "Continuous Integration"
+
+on:
+    - push
+    - pull_request
+
+env:
+    COMPOSER_FLAGS: "--ansi --no-interaction --no-progress --prefer-dist --no-suggest"
+
+jobs:
+    tests:
+        name: "Tests"
+        runs-on: "ubuntu-latest"
+        continue-on-error: ${{ matrix.experimental }}
+        strategy:
+            fail-fast: false
+            matrix:
+                dependencies:
+                    - "lowest"
+                    - "highest"
+                php-version:
+                    - "8.2"
+                    - "8.3"
+                    - "8.4"
+                experimental:
+                    - false
+                include:
+                    - php-version: "8.5"
+                      composer-options: "--ignore-platform-reqs"
+                      experimental: true
+                      dependencies: "highest"
+
+        steps:
+            - name: "Set up PHP"
+              uses: "shivammathur/setup-php@v2"
+              with:
+                  coverage: "none"
+                  php-version: "${{ matrix.php-version }}"
+                  extensions: "ds"
+                  tools: "composer:v2"
+
+            - name: "Checkout"
+              uses: "actions/checkout@v4"
+
+            - name: "Install lowest dependencies"
+              if: ${{ matrix.dependencies == 'lowest' }}
+              run: "composer update --prefer-lowest ${{ env.COMPOSER_FLAGS }} ${{ matrix.composer-options }}"
+
+            - name: "Install highest dependencies"
+              if: ${{ matrix.dependencies == 'highest' }}
+              run: "composer update ${{ env.COMPOSER_FLAGS }} ${{ matrix.composer-options }}"
+
+            - name: "Run tests"
+              run: "./vendor/bin/phpunit -c phpunit.xml.dist"
+
+    cs:
+        name: "Codestyle check on PHP 8.2"
+        runs-on: "ubuntu-latest"
+
+        steps:
+            - name: "Set up PHP"
+              uses: "shivammathur/setup-php@v2"
+              with:
+                  php-version: "8.2"
+                  extensions: "ds"
+                  tools: "composer:v2"
+
+            - name: "Checkout code"
+              uses: "actions/checkout@v4"
+
+            - name: "Download dependencies"
+              run: "composer update ${{ env.COMPOSER_FLAGS }}"
+
+            - name: "Check codestyle"
+              run: "./vendor/bin/phpcs -n --standard=vendor/stefna/codestyle/library.xml src/ tests/"
+
+    static-analysis:
+        name: "Static analysis"
+        runs-on: "ubuntu-latest"
+        strategy:
+            matrix:
+                php-version:
+                    - "8.2"
+
+        steps:
+            - name: "Set up PHP"
+              uses: "shivammathur/setup-php@v2"
+              with:
+                  coverage: "none"
+                  php-version: "${{ matrix.php-version }}"
+                  extensions: "ds"
+                  tools: "composer:v2"
+
+            - name: "Checkout"
+              uses: "actions/checkout@v4"
+
+            - name: "Install latest dependencies"
+              run: "composer update ${{ env.COMPOSER_FLAGS }}"
+
+            - name: "Run PHPStan"
+              run: "vendor/bin/phpstan analyse"
