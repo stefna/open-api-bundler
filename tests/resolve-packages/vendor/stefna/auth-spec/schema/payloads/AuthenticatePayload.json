@@ -1,0 +1,11 @@
+{
+	"description": "Init auth payload",
+	"required": true,
+	"content": {
+		"application/json": {
+			"schema": {
+				"$ref": "../models/InitAuthInput.json"
+			}
+		}
+	}
+}

@@ -1,0 +1,26 @@
+{
+	"type": "object",
+	"properties": {
+		"authUrl": {
+			"description": "Url to the login portal.",
+			"type": "string"
+		},
+		"requestId": {
+			"type": "string"
+		},
+		"statusPath": {
+			"description": "The path to query to get information about the status of the authentication request.",
+			"type": "string"
+		},
+		"bearerToken": {
+			"description": "Authorization token to access the path defined in <statusPath>.",
+			"type": "string"
+		}
+	},
+	"required": [
+		"authUrl",
+		"requestId",
+		"statusPath",
+		"bearerToken"
+	]
+}

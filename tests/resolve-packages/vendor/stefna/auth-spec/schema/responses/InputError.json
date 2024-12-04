@@ -1,0 +1,10 @@
+{
+	"description": "Input error",
+	"content": {
+		"application/json": {
+			"schema": {
+				"$ref": "../models/Error.json"
+			}
+		}
+	}
+}

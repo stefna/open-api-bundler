@@ -1,0 +1,22 @@
+{
+	"description": "Local ref response",
+	"content": {
+		"application/json": {
+			"schema": {
+				"type": "object",
+				"required": [
+					"bearerToken"
+				],
+				"properties": {
+					"bearerToken": {
+						"type": "string"
+					},
+					"account": {
+						"$ref": "@local:#/Account"
+					}
+				}
+			}
+
+		}
+	}
+}
