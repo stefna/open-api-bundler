@@ -8,18 +8,15 @@ final class BundlerTest extends ServiceTestCase
 {
 	public static function schemas(): \Generator
 	{
-		foreach (new \DirectoryIterator(dirname(__FILE__) . '/bundled-schemas') as $fileInfo) {
-			if($fileInfo->isDot()) continue;
-			yield $fileInfo->getBasename() => [$fileInfo->getPathname()];
-		}
+		yield from SchemaFinder::schemas(dirname(__FILE__) . '/bundled-schemas');
 	}
 
 	#[DataProvider('schemas')]
-	public function testBasic(string $root): void
+	public function testBasic(string $root, string $schemaFile = 'schema.json'): void
 	{
 		$service = $this->createBundleService($root);
 
-		$document = $service->bundle($root . '/schema.json');
+		$document = $service->bundle($root . '/' . $schemaFile);
 
 		$this->assertDocumentResult($root, $document);
 	}
