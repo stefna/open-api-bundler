@@ -5,6 +5,7 @@ namespace Stefna\OpenApiBundler\Service;
 use JsonPointer\BasicDocument;
 use JsonPointer\Document;
 use JsonPointer\DocumentFactory;
+use JsonPointer\Exceptions\DocumentParseError;
 use JsonPointer\Reference;
 use JsonPointer\ReferenceResolver\ReferenceResolver;
 use JsonPointer\WritableDocument;
@@ -28,11 +29,18 @@ final class InlineService
 
 	public function inline(string $schemaFile): Document
 	{
+		try {
+			$schemaDocument = $this->documentFactory->createFromFile($schemaFile);
+		}
+		catch (DocumentParseError) {
+			$schemaDocument = $this->referenceResolver->resolve(Reference::fromString($schemaFile));
+			if (!$schemaDocument instanceof WritableDocument) {
+				throw new DocumentParseError('Invalid document type:  ' . \get_class($schemaDocument) . 'expected WritableDocument');
+			}
+		}
 		$this->components = [];
 		$this->allOfPaths = [];
-		$document = $this->processDocument(
-			$this->documentFactory->createFromFile($schemaFile),
-		);
+		$document = $this->processDocument($schemaDocument);
 		$allOfPaths = array_unique($this->allOfPaths);
 		if ($allOfPaths) {
 			$merger = new AllOfMerger($document);
