@@ -8,9 +8,11 @@ use JsonPointer\DocumentFactory;
 use JsonPointer\Exceptions\DocumentParseError;
 use JsonPointer\Reference;
 use JsonPointer\ReferenceResolver\ReferenceResolver;
+use JsonPointer\ReferenceResolver\ReferenceResolverCollection;
 use JsonPointer\WritableDocument;
 use Stefna\OpenApiBundler\Enums\SchemaType;
 use Stefna\OpenApiBundler\Merger\AllOfMerger;
+use Stefna\OpenApiBundler\ReferenceResolver\LocalReferenceResolver;
 
 final class InlineService
 {
@@ -20,11 +22,22 @@ final class InlineService
 	private array $allOfPaths = [];
 
 	private readonly DocumentFactory $documentFactory;
+	private LocalReferenceResolver $localReferenceResolver;
+	private readonly ReferenceResolverCollection $referenceResolver;
 
 	public function __construct(
-		private readonly ReferenceResolver $referenceResolver,
+		ReferenceResolver $referenceResolver,
 	) {
 		$this->documentFactory = new DocumentFactory();
+		if (!$referenceResolver instanceof ReferenceResolverCollection) {
+			$this->referenceResolver = new ReferenceResolverCollection();
+			$this->referenceResolver->addResolver($referenceResolver);
+		}
+		else {
+			$this->referenceResolver = $referenceResolver;
+		}
+		$this->localReferenceResolver = new LocalReferenceResolver($this->documentFactory);
+		$this->referenceResolver->addResolver($this->localReferenceResolver);
 	}
 
 	public function inline(string $schemaFile): Document
@@ -38,6 +51,8 @@ final class InlineService
 				throw new DocumentParseError('Invalid document type:  ' . \get_class($schemaDocument) . 'expected WritableDocument');
 			}
 		}
+		$this->localReferenceResolver->rootDocument = $schemaDocument;
+
 		$this->components = [];
 		$this->allOfPaths = [];
 		$document = $this->processDocument($schemaDocument);

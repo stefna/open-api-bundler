@@ -1,0 +1,37 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "Api",
+		"version": "1.0"
+	},
+	"servers": [
+		{
+			"description": "production",
+			"url": "..."
+		}
+	],
+	"paths": {
+		"/sites": {
+			"get": {
+				"operationId": "test",
+				"responses": {
+					"200": {
+						"$ref": "@stefna/auth-spec:schema/responses/LocalRefResponse.json"
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"Account": {
+				"type": "object",
+				"properties": {
+					"name": {
+						"type": "string"
+					}
+				}
+			}
+		}
+	}
+}
