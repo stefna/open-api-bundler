@@ -1,0 +1,31 @@
+{
+	"type": "object",
+	"allOf": [
+		{
+			"type": "object",
+			"required": [
+				"plate",
+				"reason",
+				"type"
+			],
+			"properties": {
+				"visitId": {
+					"type": "string",
+					"format": "uuid",
+					"nullable": true
+				},
+				"type": {
+					"type": "string",
+					"enum": ["time", "visit"]
+				},
+				"objectType": {
+					"type": "string",
+					"default": "TemporaryWhitelistEntry"
+				}
+			}
+		},
+		{
+			"$ref": "base.json"
+		}
+	]
+}

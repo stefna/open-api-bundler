@@ -59,8 +59,15 @@ final class InlineService
 		$allOfPaths = array_unique($this->allOfPaths);
 		if ($allOfPaths) {
 			$merger = new AllOfMerger($document);
+			/** @var string $path */
 			foreach ($allOfPaths as $path) {
-				$document->set($path, $merger->merge($path . '/allOf'));
+				/** @var array{"$id": string} $mergedSchema */
+				$mergedSchema = $merger->merge($path . '/allOf');
+				if ($path === '') {
+					$document = $this->documentFactory->createFromArray($document->getId(), $mergedSchema);
+					break;
+				}
+				$document->set($path, $mergedSchema);
 			}
 		}
 

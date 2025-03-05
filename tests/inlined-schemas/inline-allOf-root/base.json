@@ -1,0 +1,49 @@
+{
+	"title": "WhitelistBaseEntry",
+	"type": "object",
+	"required": [
+		"plate",
+		"reason",
+		"objectType"
+	],
+	"discriminator": {
+		"propertyName": "objectType"
+	},
+	"properties": {
+		"id": {
+			"type": "string",
+			"format": "uuid",
+			"example": "985c1032-e079-4597-b1c6-ac2223036623"
+		},
+		"author": {
+			"type": "string",
+			"nullable": true,
+			"readOnly": true
+		},
+		"plate": {
+			"type": "string",
+			"example": "ICE111"
+		},
+		"activeFrom": {
+			"type": "string",
+			"nullable": true,
+			"format": "date-time"
+		},
+		"expireOn": {
+			"type": "string",
+			"nullable": true,
+			"format": "date-time"
+		},
+		"createdOn": {
+			"type": "string",
+			"format": "date-time",
+			"readOnly": true
+		},
+		"reason": {
+			"type": "string"
+		},
+		"objectType": {
+			"type": "string"
+		}
+	}
+}
