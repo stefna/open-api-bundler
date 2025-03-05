@@ -63,7 +63,7 @@ final readonly class AllOfMerger
 
 			$rootValue = $root[$key];
 			if (array_is_list($rootValue)) {
-				$root[$key] = array_unique(array_merge($root[$key], $value));
+				$root[$key] = array_values(array_unique(array_merge($root[$key], $value)));
 				continue;
 			}
 			/** @var array<string, mixed> $rootValue */
