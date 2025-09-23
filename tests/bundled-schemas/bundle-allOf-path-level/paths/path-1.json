@@ -1,0 +1,27 @@
+{
+	"post": {
+		"operationId": "createSite",
+		"summary": "Register new site",
+		"requestBody": {
+			"$ref": "../payloads/CreateSitePayload.json"
+		},
+		"responses": {
+			"default": {
+				"description": "ok"
+			},
+			"201": {
+				"description": "OK",
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "../models/Site.yaml"
+						}
+					}
+				}
+			},
+			"400": {
+				"$ref": "#/components/responses/InputError"
+			}
+		}
+	}
+}

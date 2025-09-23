@@ -9,6 +9,7 @@ use JsonPointer\Reference;
 use JsonPointer\ReferenceResolver\ReferenceResolver;
 use JsonPointer\WritableDocument;
 use Stefna\OpenApiBundler\Enums\SchemaType;
+use Stefna\OpenApiBundler\Merger\AllOfMerger;
 
 final class BundleService
 {
@@ -127,6 +128,12 @@ final class BundleService
 				SchemaType::Responses => 'responses',
 				SchemaType::Parameters => 'parameters',
 			};
+
+			if ($type === SchemaType::Paths) {
+				$this->mergeAllOfPaths($document);
+				continue;
+			}
+
 			$schemas = $this->processInternalSchemas($type, $document);
 			$path = '/components/' . $pathKey;
 			if ($document->has($path)) {
@@ -138,6 +145,27 @@ final class BundleService
 				$components[$pathKey] = $schemas;
 				$document->set('/components', $components);
 			}
+		}
+	}
+
+	private function mergeAllOfPaths(WritableDocument&Document $document): void
+	{
+		$allOfMergerSchema = [];
+		$pathNodes = $document->get('/paths');
+		if (!is_array($pathNodes)) {
+			return;
+		}
+
+		$merger = new AllOfMerger($document);
+		foreach ($pathNodes as $path => $pathNode) {
+			if (is_array($pathNode) && isset($pathNode['allOf'])) {
+				$allOfKey = '/paths/' . urlencode($path);
+				$allOfMergerSchema[$allOfKey] = $merger->merge($allOfKey . '/allOf');
+			}
+		}
+
+		foreach ($allOfMergerSchema as $allOfKey => $mergedSchema) {
+			$document->set($allOfKey, $mergedSchema);
 		}
 	}
 
@@ -177,8 +205,14 @@ final class BundleService
 			) {
 				return SchemaType::Responses;
 			}
-			if (str_starts_with($documentPaths[0], '/paths/') && substr_count($documentPaths[0], '/') === 2) {
-				return SchemaType::Paths;
+			if (str_starts_with($documentPaths[0], '/paths/')) {
+				$slashCount = substr_count($documentPaths[0], '/');
+				if ($slashCount === 2) {
+					return SchemaType::Paths;
+				}
+				if ($slashCount === 4 && str_contains($documentPaths[0], '/allOf/')) {
+					return SchemaType::Paths;
+				}
 			}
 			// Disabled for now. Need more testing for side effects
 			// if (str_contains($path, '/parameters/')) {

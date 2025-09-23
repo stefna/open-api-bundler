@@ -1,0 +1,28 @@
+{
+	"get": {
+		"operationId": "searchSites",
+		"responses": {
+			"default": {
+				"description": "ok"
+			},
+			"200": {
+				"description": "OK",
+				"content": {
+					"application/json": {
+						"schema": {
+							"type": "object",
+							"properties": {
+								"data": {
+									"type": "array",
+									"items": {
+										"$ref": "../models/Site.yaml"
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
