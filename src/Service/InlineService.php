@@ -9,6 +9,7 @@ use JsonPointer\Exceptions\DocumentParseError;
 use JsonPointer\Reference;
 use JsonPointer\ReferenceResolver\ReferenceResolver;
 use JsonPointer\ReferenceResolver\ReferenceResolverCollection;
+use JsonPointer\ReferenceType;
 use JsonPointer\WritableDocument;
 use Stefna\OpenApiBundler\Enums\SchemaType;
 use Stefna\OpenApiBundler\Merger\AllOfMerger;
@@ -74,6 +75,20 @@ final class InlineService
 		return $document;
 	}
 
+	private function getRefName(Reference $reference, SchemaType $type): string
+	{
+		if ($type === SchemaType::Paths) {
+			$refName = $reference->getPath();
+			if ($reference->type === ReferenceType::ComplexExternal) {
+				$refName .= $reference->getUri();
+			}
+
+			return md5($refName);
+		}
+
+		return $reference->getName();
+	}
+
 	private function processDocument(
 		Document&WritableDocument $document,
 		?Reference $rootReference = null,
@@ -81,7 +96,7 @@ final class InlineService
 		foreach ($this->findReferences($document, $rootReference) as $ref => $documentPaths) {
 			$reference = Reference::fromString($ref);
 			$type = $this->resolveSchemaType($documentPaths);
-			$refName = $type === SchemaType::Paths ? md5($reference->getPath()) : $reference->getName();
+			$refName = $this->getRefName($reference, $type);
 
 			if (
 				isset($this->components[$type->name][$refName])
