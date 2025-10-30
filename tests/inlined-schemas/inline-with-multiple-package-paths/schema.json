@@ -1,0 +1,21 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "Api",
+		"version": "1.0"
+	},
+	"servers": [
+		{
+			"description": "production",
+			"url": "..."
+		}
+	],
+	"paths": {
+		"/path": {
+			"$ref": "@stefna/random:#/paths/GetSimplePath"
+		},
+		"/other-path": {
+			"$ref": "@stefna/random:#/paths/GetSimpleOtherPath"
+		}
+	}
+}
