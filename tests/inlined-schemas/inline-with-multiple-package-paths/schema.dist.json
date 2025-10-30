@@ -1,0 +1,45 @@
+{
+	"info": {
+		"title": "Api",
+		"version": "1.0"
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/other-path": {
+			"$id": "106995c7d8ce71aa3da122f804835571",
+			"get": {
+				"operationId": "testSimpleOtherGet",
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"summary": "Other simple get",
+				"tags": [
+					"simple"
+				]
+			}
+		},
+		"/path": {
+			"$id": "dc05ef474f309d90e932aa22408eed2e",
+			"get": {
+				"operationId": "testSimpleGet",
+				"responses": {
+					"200": {
+						"description": "OK"
+					}
+				},
+				"summary": "Simple get",
+				"tags": [
+					"simple"
+				]
+			}
+		}
+	},
+	"servers": [
+		{
+			"description": "production",
+			"url": "..."
+		}
+	]
+}
