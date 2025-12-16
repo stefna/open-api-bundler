@@ -1,0 +1,20 @@
+{
+	"title": "AccountLogin",
+	"type": "object",
+	"properties": {
+		"accountId": {
+			"type": "string",
+			"format": "uuid"
+		},
+		"expire": {
+			"type": "string",
+			"nullable": true,
+			"format": "date-time"
+		},
+		"tokenId": {
+			"type": "string",
+			"format": "uuid",
+			"readOnly": true
+		}
+	}
+}

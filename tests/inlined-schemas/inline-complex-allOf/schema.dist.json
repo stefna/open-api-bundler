@@ -1,0 +1,98 @@
+{
+	"paths": {
+		"/tests": {
+			"get": {
+				"operationId": "getAccountLogins",
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"data": {
+											"items": {
+												"oneOf": [
+													{
+														"$id": "AccountEmailLogin.json",
+														"properties": {
+															"accountId": {
+																"format": "uuid",
+																"type": "string"
+															},
+															"expire": {
+																"format": "date-time",
+																"nullable": true,
+																"type": "string"
+															},
+															"tokenId": {
+																"format": "uuid",
+																"readOnly": true,
+																"type": "string"
+															},
+															"email": {
+																"format": "email",
+																"type": "string"
+															}
+														},
+														"title": "AccountLoginEmail",
+														"type": "object"
+													},
+													{
+														"$id": "AccountSsnLogin.json",
+														"properties": {
+															"accountId": {
+																"format": "uuid",
+																"type": "string"
+															},
+															"expire": {
+																"format": "date-time",
+																"nullable": true,
+																"type": "string"
+															},
+															"tokenId": {
+																"format": "uuid",
+																"readOnly": true,
+																"type": "string"
+															},
+															"ssn": {
+																"type": "string"
+															}
+														},
+														"title": "AccountLoginSsn",
+														"type": "object"
+													}
+												]
+											},
+											"type": "array"
+										},
+										"next": {
+											"nullable": true,
+											"type": "string"
+										},
+										"previous": {
+											"nullable": true,
+											"type": "string"
+										},
+										"total": {
+											"type": "integer"
+										}
+									},
+									"required": [
+										"data",
+										"total"
+									],
+									"type": "object"
+								}
+							}
+						},
+						"description": "OK"
+					}
+				},
+				"summary": "Get login alternatives for account",
+				"tags": [
+					"Account"
+				]
+			}
+		}
+	}
+}

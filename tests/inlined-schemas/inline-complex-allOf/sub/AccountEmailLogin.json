@@ -1,0 +1,18 @@
+{
+    "allOf": [
+        {
+            "$ref": "AccountLogin.json"
+
+        },
+        {
+            "title": "AccountLoginEmail",
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "format": "email"
+                }
+            }
+        }
+    ]
+}

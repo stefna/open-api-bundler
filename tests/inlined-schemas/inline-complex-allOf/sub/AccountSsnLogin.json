@@ -1,0 +1,17 @@
+{
+    "allOf": [
+        {
+            "$ref": "AccountLogin.json"
+
+        },
+        {
+            "title": "AccountLoginSsn",
+            "type": "object",
+            "properties": {
+                "ssn": {
+                    "type": "string"
+                }
+            }
+        }
+    ]
+}

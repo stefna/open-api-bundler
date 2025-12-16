@@ -62,8 +62,13 @@ final class InlineService
 			$merger = new AllOfMerger($document);
 			/** @var string $path */
 			foreach ($allOfPaths as $path) {
-				/** @var array{"$id": string} $mergedSchema */
-				$mergedSchema = $merger->merge($path . '/allOf');
+				try {
+					/** @var array{"$id": string} $mergedSchema */
+					$mergedSchema = $merger->merge($path . '/allOf');
+				}
+				catch (\JsonPointer\Exceptions\Reference) {
+					continue;
+				}
 				if ($path === '') {
 					$document = $this->documentFactory->createFromArray($document->getId(), $mergedSchema);
 					break;
@@ -93,6 +98,7 @@ final class InlineService
 		Document&WritableDocument $document,
 		?Reference $rootReference = null,
 	): Document&WritableDocument {
+		$isAllOfDocument = ($document->get()['allOf'] ?? null) !== null;
 		foreach ($this->findReferences($document, $rootReference) as $ref => $documentPaths) {
 			$reference = Reference::fromString($ref);
 			$type = $this->resolveSchemaType($documentPaths);
@@ -141,6 +147,11 @@ final class InlineService
 				}
 				$document->set($path, $this->components[$type->name][$refName]);
 			}
+		}
+		if ($isAllOfDocument) {
+			$merger = new AllOfMerger($document);
+			$mergedSchema = $merger->merge('/allOf');
+			return $this->documentFactory->createFromArray($document->getId(), $mergedSchema);
 		}
 		return $document;
 	}

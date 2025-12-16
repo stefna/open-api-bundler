@@ -1,0 +1,52 @@
+{
+	"paths": {
+		"/tests": {
+			"get": {
+				"summary": "Get login alternatives for account",
+				"operationId": "getAccountLogins",
+				"tags": [
+					"Account"
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"required": ["data", "total"],
+									"properties": {
+										"data": {
+											"type": "array",
+											"items": {
+												"oneOf": [
+													{
+														"$ref": "./sub/AccountEmailLogin.json"
+													},
+													{
+														"$ref": "./sub/AccountSsnLogin.json"
+													}
+												]
+											}
+										},
+										"next": {
+											"type": "string",
+											"nullable": true
+										},
+										"previous": {
+											"type": "string",
+											"nullable": true
+										},
+										"total": {
+											"type": "integer"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
