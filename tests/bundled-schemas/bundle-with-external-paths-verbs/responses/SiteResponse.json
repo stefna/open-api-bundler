@@ -1,0 +1,10 @@
+{
+	"description": "OK",
+	"content": {
+		"application/json": {
+			"schema": {
+				"$ref": "../models/Site.yaml"
+			}
+		}
+	}
+}

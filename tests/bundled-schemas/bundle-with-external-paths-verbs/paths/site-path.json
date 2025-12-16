@@ -1,0 +1,5 @@
+{
+	"post": {
+		"$ref": "site-test-verb.json"
+	}
+}

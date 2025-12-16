@@ -42,6 +42,7 @@ final class BundleService
 	private function processDocument(
 		Document&WritableDocument $document,
 		?Reference $rootReference = null,
+		?SchemaType $rootType = null,
 	): Document&WritableDocument {
 		foreach ($this->findReferences($document, $rootReference) as $ref => $documentPaths) {
 			$reference = Reference::fromString($ref);
@@ -52,6 +53,11 @@ final class BundleService
 
 			// update $ref to new ref
 			foreach ($documentPaths as $path) {
+				if ($rootType === SchemaType::Paths && $type === SchemaType::Schema && in_array($path, ['/post', '/get', '/put', '/delete', '/patch', '/head', '/options', '/trace'])) {
+					$customInlining[] = $path;
+					$schemaName = md5($reference->getUri() ?: $reference->getPath());
+					continue;
+				}
 				if ($type === SchemaType::Schema && str_starts_with($path, '/paths/') && substr_count($path, '/') === 3) {
 					$customInlining[] = $path;
 					$schemaName = md5($reference->getUri() ?: $reference->getPath());
@@ -81,6 +87,7 @@ final class BundleService
 			$this->components[$typeKey][$schemaName] = $this->processDocument(
 				BasicDocument::fromDocument($this->referenceResolver->resolve($reference)),
 				$reference,
+				$type,
 			)->get();
 			if ($customInlining) {
 				foreach ($customInlining as $path) {

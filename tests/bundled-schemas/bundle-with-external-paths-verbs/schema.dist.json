@@ -1,0 +1,118 @@
+{
+	"components": {
+		"requestBodies": {
+			"CreateSitePayload": {
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "#/components/schemas/Site"
+						}
+					}
+				},
+				"required": true
+			}
+		},
+		"responses": {
+			"InputError": {
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "#/components/schemas/ErrorException"
+						}
+					}
+				},
+				"description": "Generic input error"
+			},
+			"SiteResponse": {
+				"content": {
+					"application/json": {
+						"schema": {
+							"$ref": "#/components/schemas/Site"
+						}
+					}
+				},
+				"description": "OK"
+			}
+		},
+		"schemas": {
+			"ErrorException": {
+				"properties": {
+					"exception": {
+						"properties": {
+							"message": {
+								"type": "string"
+							}
+						},
+						"type": "object"
+					}
+				},
+				"readOnly": true,
+				"required": [
+					"messages"
+				],
+				"title": "Exception handle by underlying system",
+				"type": "object"
+			},
+			"Site": {
+				"properties": {
+					"id": {
+						"format": "uuid",
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"name"
+				],
+				"title": "Site",
+				"type": "object"
+			}
+		}
+	},
+	"info": {
+		"title": "Api",
+		"version": "1.0"
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/sites": {
+			"post": {
+				"operationId": "updateSite",
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"$ref": "#/components/requestBodies/CreateSitePayload"
+				},
+				"responses": {
+					"201": {
+						"$ref": "#/components/responses/SiteResponse"
+					},
+					"400": {
+						"$ref": "#/components/responses/InputError"
+					},
+					"default": {
+						"description": "ok"
+					}
+				},
+				"summary": "Register new site"
+			}
+		}
+	},
+	"servers": [
+		{
+			"description": "production",
+			"url": "..."
+		}
+	]
+}
