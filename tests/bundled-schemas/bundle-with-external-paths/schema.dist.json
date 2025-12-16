@@ -30,6 +30,36 @@
                     }
                 }
             }
+        },
+        "/sites/{id}": {
+            "put": {
+                "operationId": "updateSite",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "summary": "Register new site",
+                "requestBody": {
+                    "$ref": "#/components/requestBodies/CreateSitePayload"
+                },
+                "responses": {
+                    "default": {
+                        "description": "ok"
+                    },
+                    "201": {
+                        "$ref": "#/components/responses/SiteResponse"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/InputError"
+                    }
+                }
+            }
         }
     },
     "components": {

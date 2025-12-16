@@ -52,6 +52,11 @@ final class BundleService
 
 			// update $ref to new ref
 			foreach ($documentPaths as $path) {
+				if ($type === SchemaType::Schema && str_starts_with($path, '/paths/') && substr_count($path, '/') === 3) {
+					$customInlining[] = $path;
+					$schemaName = md5($reference->getUri() ?: $reference->getPath());
+					continue;
+				}
 				if ($type === SchemaType::Paths) {
 					$customInlining[] = $path;
 					$schemaName = md5($reference->getUri() ?: $reference->getPath());
@@ -81,6 +86,7 @@ final class BundleService
 				foreach ($customInlining as $path) {
 					$document->set($path, $this->components[$typeKey][$schemaName]);
 				}
+				unset($this->components[$typeKey][$schemaName]);
 			}
 		}
 		return $document;

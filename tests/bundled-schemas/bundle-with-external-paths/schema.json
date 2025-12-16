@@ -13,6 +13,11 @@
 	"paths": {
 		"/sites": {
 			"$ref": "paths/site-path.json"
+		},
+		"/sites/{id}": {
+			"put": {
+				"$ref": "paths/site-test-verb.json"
+			}
 		}
 	},
 	"components": {

@@ -1,0 +1,28 @@
+{
+	"operationId": "updateSite",
+	"summary": "Register new site",
+	"requestBody": {
+		"$ref": "../payloads/CreateSitePayload.json"
+	},
+	"responses": {
+		"default": {
+			"description": "ok"
+		},
+		"201": {
+			"$ref": "../responses/SiteResponse.json"
+		},
+		"400": {
+			"$ref": "#/components/responses/InputError"
+		}
+	},
+	"parameters": [
+		{
+			"name": "id",
+			"in": "path",
+			"required": true,
+			"schema": {
+				"type": "string"
+			}
+		}
+	]
+}
