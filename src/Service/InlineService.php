@@ -97,6 +97,7 @@ final class InlineService
 	private function processDocument(
 		Document&WritableDocument $document,
 		?Reference $rootReference = null,
+		?string $parentPath = null,
 	): Document&WritableDocument {
 		$isAllOfDocument = ($document->get()['allOf'] ?? null) !== null;
 		foreach ($this->findReferences($document, $rootReference) as $ref => $documentPaths) {
@@ -104,6 +105,7 @@ final class InlineService
 			$type = $this->resolveSchemaType($documentPaths);
 			$refName = $this->getRefName($reference, $type);
 
+			$nextParentPath = $parentPath;
 			if (
 				isset($this->components[$type->name][$refName])
 				&& $this->components[$type->name][$refName]
@@ -113,6 +115,9 @@ final class InlineService
 					$schema = ['$ref' => $schema];
 				}
 				foreach ($documentPaths as $path) {
+					if (str_contains($path, '/allOf/')) {
+						$this->allOfPaths[] = ($parentPath ?? '') . substr($path, 0, (int)strpos($path, '/allOf/'));
+					}
 					$document->set($path, $schema);
 				}
 				continue;
@@ -130,6 +135,7 @@ final class InlineService
 			}
 			else {
 				$referenceDocument = BasicDocument::fromDocument($this->referenceResolver->resolve($reference));
+				$nextParentPath .= $documentPaths[0];
 			}
 			$schemaId = $referenceDocument->get()['$id'] ?? $refName;
 			// reserve schema to avoid infinite recursion
@@ -137,13 +143,15 @@ final class InlineService
 			$this->components[$type->name][$refName] = $this->processDocument(
 				$referenceDocument,
 				$reference,
+				$nextParentPath,
+
 			)->get();
 			$this->components[$type->name][$refName]['$id'] = $schemaId;
 
 			// update $ref to new ref
 			foreach ($documentPaths as $path) {
 				if (str_contains($path, '/allOf/')) {
-					$this->allOfPaths[] = substr($path, 0, (int)strpos($path, '/allOf/'));
+					$this->allOfPaths[] = $parentPath . substr($path, 0, (int)strpos($path, '/allOf/'));
 				}
 				$document->set($path, $this->components[$type->name][$refName]);
 			}
