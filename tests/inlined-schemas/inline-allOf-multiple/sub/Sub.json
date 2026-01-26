@@ -1,0 +1,13 @@
+{
+	"type": "object",
+	"properties": {
+		"sub1": {
+			"type": "string"
+		},
+		"sub2": {
+			"type": "string",
+			"format": "uuid"
+		}
+	},
+	"required": ["sub1"]
+}

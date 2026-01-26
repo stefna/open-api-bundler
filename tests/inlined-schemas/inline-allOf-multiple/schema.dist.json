@@ -1,0 +1,145 @@
+{
+    "title": "Account",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string",
+            "format": "uuid"
+        },
+        "name": {
+            "type": "string"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "new",
+                "verified",
+                "active",
+                "blocked",
+                "deleted"
+            ],
+            "readOnly": true
+        },
+        "createdOn": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+        },
+		"anotherRefWithAllOf": {
+			"$id": "OtherNestedAllOf.json",
+			"properties": {
+				"otherNestedAllOf": {
+					"properties": {
+						"sub1": {
+							"type": "string"
+						},
+						"sub2": {
+							"format": "uuid",
+							"type": "string"
+						}
+					},
+					"readOnly": true,
+					"required": [
+						"sub1"
+					],
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+        "blockedUntil": {
+            "type": "string",
+            "format": "date-time"
+        },
+        "role": {
+            "readOnly": true,
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "sub2": {
+                    "type": "string"
+                },
+                "externalId": {
+                    "type": "string",
+                    "format": "uuid"
+                }
+            }
+        },
+        "complexAllOfMerge": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "sub2": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "externalId": {
+                    "type": "string",
+                    "format": "uuid"
+                },
+                "sub1": {
+                    "type": "string"
+                },
+                "extraFields": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "sub1",
+                "extraFields"
+            ]
+        },
+		"otherRefWithAllOf": {
+			"$id": "OtherNestedAllOf.json",
+			"properties": {
+				"otherNestedAllOf": {
+					"properties": {
+						"sub1": {
+							"type": "string"
+						},
+						"sub2": {
+							"format": "uuid",
+							"type": "string"
+						}
+					},
+					"readOnly": true,
+					"required": [
+						"sub1"
+					],
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+		"refWithAllOf": {
+			"$id": "NestedAllOf.json",
+			"properties": {
+				"nestedAllOf": {
+					"properties": {
+						"sub1": {
+							"type": "string"
+						},
+						"sub2": {
+							"format": "uuid",
+							"type": "string"
+						}
+					},
+					"readOnly": true,
+					"required": [
+						"sub1"
+					],
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+        "required": [
+            "id",
+            "status"
+        ]
+    }
+}
