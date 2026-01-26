@@ -21,6 +21,8 @@ final class InlineService
 	private array $components = [];
 	/** @var list<string> */
 	private array $allOfPaths = [];
+	/** @var array<string, list<string>> */
+	private array $modelAllOfPaths = [];
 
 	private readonly DocumentFactory $documentFactory;
 	private LocalReferenceResolver $localReferenceResolver;
@@ -114,12 +116,14 @@ final class InlineService
 				if (is_string($schema)) {
 					$schema = ['$ref' => $schema];
 				}
-				foreach ($documentPaths as $path) {
-					if (str_contains($path, '/allOf/')) {
-						$this->allOfPaths[] = ($parentPath ?? '') . substr($path, 0, (int)strpos($path, '/allOf/'));
-					}
-					$document->set($path, $schema);
-				}
+				$document = $this->processDocumentPaths(
+					$document,
+					$schema,
+					$documentPaths,
+					$refName,
+					$rootReference?->getName(),
+					$parentPath
+				);
 				continue;
 			}
 
@@ -149,18 +153,49 @@ final class InlineService
 			$this->components[$type->name][$refName]['$id'] = $schemaId;
 
 			// update $ref to new ref
-			foreach ($documentPaths as $path) {
-				if (str_contains($path, '/allOf/')) {
-					$this->allOfPaths[] = $parentPath . substr($path, 0, (int)strpos($path, '/allOf/'));
-				}
-				$document->set($path, $this->components[$type->name][$refName]);
-			}
+			$document = $this->processDocumentPaths(
+				$document,
+				$this->components[$type->name][$refName],
+				$documentPaths,
+				$refName,
+				$rootReference?->getName(),
+				$parentPath
+			);
 		}
 		if ($isAllOfDocument) {
 			$merger = new AllOfMerger($document);
 			$mergedSchema = $merger->merge('/allOf');
 			return $this->documentFactory->createFromArray($document->getId(), $mergedSchema);
 		}
+		return $document;
+	}
+
+	/**
+	 * @param list<string> $documentPaths
+	 */
+	private function processDocumentPaths(
+		Document&WritableDocument $document,
+		mixed $schema,
+		array $documentPaths,
+		string $refName,
+		?string $parentName = null,
+		?string $parentPath = null,
+	): Document&WritableDocument {
+		$parentName ??= 'root';
+		foreach ($documentPaths as $path) {
+			if (array_key_exists($refName, $this->modelAllOfPaths)) {
+				foreach ($this->modelAllOfPaths[$refName] as $allOfPath) {
+					$this->allOfPaths[] = ($parentPath ?? '') . $path . $allOfPath;
+				}
+			}
+			elseif (str_contains($path, '/allOf/')) {
+				$stripped = substr($path, 0, (int)strpos($path, '/allOf/'));
+				$this->modelAllOfPaths[$parentName][] = $stripped;
+				$this->allOfPaths[] = $parentPath . $stripped;
+			}
+			$document->set($path, $schema);
+		}
+
 		return $document;
 	}
 
