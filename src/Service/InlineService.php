@@ -122,7 +122,7 @@ final class InlineService
 					$documentPaths,
 					$refName,
 					$rootReference?->getName(),
-					$parentPath
+					$parentPath,
 				);
 				continue;
 			}
@@ -148,7 +148,6 @@ final class InlineService
 				$referenceDocument,
 				$reference,
 				$nextParentPath,
-
 			)->get();
 			$this->components[$type->name][$refName]['$id'] = $schemaId;
 
@@ -159,7 +158,7 @@ final class InlineService
 				$documentPaths,
 				$refName,
 				$rootReference?->getName(),
-				$parentPath
+				$parentPath,
 			);
 		}
 		if ($isAllOfDocument) {
