@@ -1,0 +1,15 @@
+{
+	"type": "object",
+	"properties": {
+		"nestedAllOf": {
+			"allOf": [
+				{
+					"$ref": "Sub.json"
+				},
+				{
+					"readOnly": true
+				}
+			]
+		}
+	}
+}
