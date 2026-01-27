@@ -163,6 +163,7 @@ final class InlineService
 		}
 		if ($isAllOfDocument) {
 			$merger = new AllOfMerger($document);
+			/** @var array{id?: string, "$id"?: string} $mergedSchema */
 			$mergedSchema = $merger->merge('/allOf');
 			return $this->documentFactory->createFromArray($document->getId(), $mergedSchema);
 		}
