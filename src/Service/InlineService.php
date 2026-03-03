@@ -113,8 +113,13 @@ final class InlineService
 				&& $this->components[$type->name][$refName]
 			) {
 				$schema = $this->components[$type->name][$refName];
+				$processAllOf = true;
 				if (is_string($schema)) {
-					$schema = ['$ref' => $schema];
+					$schema = [
+						'$ref' => $schema,
+						'x-recursion' => true,
+					];
+					$processAllOf = false;
 				}
 				$document = $this->processDocumentPaths(
 					$document,
@@ -123,6 +128,7 @@ final class InlineService
 					$refName,
 					$rootReference?->getName(),
 					$parentPath,
+					$processAllOf,
 				);
 				continue;
 			}
@@ -180,15 +186,16 @@ final class InlineService
 		string $refName,
 		?string $parentName = null,
 		?string $parentPath = null,
+		bool $processAllOf = true,
 	): Document&WritableDocument {
 		$parentName ??= 'root';
 		foreach ($documentPaths as $path) {
-			if (array_key_exists($refName, $this->modelAllOfPaths)) {
+			if ($processAllOf && array_key_exists($refName, $this->modelAllOfPaths)) {
 				foreach ($this->modelAllOfPaths[$refName] as $allOfPath) {
 					$this->allOfPaths[] = ($parentPath ?? '') . $path . $allOfPath;
 				}
 			}
-			elseif (str_contains($path, '/allOf/')) {
+			elseif ($processAllOf && str_contains($path, '/allOf/')) {
 				$stripped = substr($path, 0, (int)strpos($path, '/allOf/'));
 				$this->modelAllOfPaths[$parentName][] = $stripped;
 				$this->allOfPaths[] = $parentPath . $stripped;

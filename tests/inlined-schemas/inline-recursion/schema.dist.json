@@ -64,7 +64,8 @@
                     "$id": "Role.json"
                 },
                 "parent": {
-                    "$ref": "Category.yaml"
+                    "$ref": "Category.yaml",
+                    "x-recursion": true
                 }
             },
             "$id": "Category.yaml"

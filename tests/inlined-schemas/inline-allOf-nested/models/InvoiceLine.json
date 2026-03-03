@@ -1,0 +1,44 @@
+{
+	"title": "Invoice Line",
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string",
+			"format": "uuid",
+			"readOnly": true
+		},
+		"invoiceId": {
+			"type": "string",
+			"format": "uuid",
+			"readOnly": true
+		},
+		"unitPriceExcludingVat": {
+			"allOf": [
+				{
+					"$ref": "Money.json"
+				},
+				{
+					"readOnly": true
+				}
+			]
+		},
+		"tripPaymentId": {
+			"type": "string",
+			"format": "uuid",
+			"readOnly": true
+		},
+		"tripPayment": {
+			"allOf": [
+				{
+					"$ref": "TripPayment.json"
+				},
+				{
+					"readOnly": true
+				},
+				{
+					"nullable": true
+				}
+			]
+		}
+	}
+}

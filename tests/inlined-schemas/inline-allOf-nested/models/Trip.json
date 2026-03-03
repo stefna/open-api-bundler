@@ -1,0 +1,20 @@
+{
+	"title": "Trip",
+	"type": "object",
+	"required": [
+		"id"
+	],
+	"properties": {
+		"id": {
+			"type": "string",
+			"format": "uuid",
+			"example": "985c1032-e079-4597-b1c6-ac2223036623"
+		},
+		"payments": {
+			"type": "array",
+			"items": {
+				"$ref": "TripPayment.json"
+			}
+		}
+	}
+}

@@ -1,0 +1,46 @@
+{
+	"title": "Invoice object",
+	"type": "object",
+	"properties": {
+		"id": {
+			"type": "string",
+			"format": "uuid",
+			"readOnly": true
+		},
+		"tripId": {
+			"type": "string",
+			"format": "uuid",
+			"readOnly": true
+		},
+		"trip": {
+			"allOf": [
+				{
+					"$ref": "Trip.json"
+				},
+				{
+					"readOnly": true
+				},
+				{
+					"nullable": true
+				}
+			]
+		},
+		"lines": {
+			"type": "array",
+			"items": {
+				"$ref": "InvoiceLine.json"
+			},
+			"readOnly": true
+		},
+		"totalPrice": {
+			"allOf": [
+				{
+					"$ref": "Money.json"
+				},
+				{
+					"readOnly": true
+				}
+			]
+		}
+	}
+}

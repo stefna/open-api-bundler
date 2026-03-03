@@ -1,0 +1,25 @@
+{
+	"title": "PaymentLine",
+	"description": "A payment line associated with a trip",
+	"type": "object",
+	"required": [
+		"id",
+		"tripId"
+	],
+	"properties": {
+		"id": {
+			"type": "string",
+			"format": "uuid"
+		},
+		"tripId": {
+			"type": "string",
+			"format": "uuid"
+		},
+		"price": {
+			"$ref": "Money.json"
+		},
+		"invoice": {
+			"$ref": "Invoice.json"
+		}
+	}
+}

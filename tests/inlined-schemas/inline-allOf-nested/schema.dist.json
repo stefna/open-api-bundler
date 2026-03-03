@@ -1,0 +1,224 @@
+{
+	"components": {
+		"requestBodies": [],
+		"schemas": []
+	},
+	"info": {
+		"contact": {
+			"email": "no-support@stefna.is",
+			"name": "Stefna ehf",
+			"url": "https://stefna.is"
+		},
+		"title": "test",
+		"version": "1.0"
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/invoices/{id}": {
+			"get": {
+				"operationId": "viewInvoice",
+				"responses": {
+					"200": {
+						"content": {
+							"application/json": {
+								"schema": {
+									"$id": "Invoice.json",
+									"properties": {
+										"id": {
+											"format": "uuid",
+											"readOnly": true,
+											"type": "string"
+										},
+										"lines": {
+											"items": {
+												"$id": "InvoiceLine.json",
+												"properties": {
+													"id": {
+														"format": "uuid",
+														"readOnly": true,
+														"type": "string"
+													},
+													"invoiceId": {
+														"format": "uuid",
+														"readOnly": true,
+														"type": "string"
+													},
+													"tripPayment": {
+														"description": "A payment line associated with a trip",
+														"nullable": true,
+														"properties": {
+															"id": {
+																"format": "uuid",
+																"type": "string"
+															},
+															"invoice": {
+																"$ref": "Invoice.json",
+																"x-recursion": true
+															},
+															"price": {
+																"$id": "Money.json",
+																"nullable": true,
+																"properties": {
+																	"amount": {
+																		"example": 1250,
+																		"type": "number"
+																	},
+																	"currency": {
+																		"example": "ISK",
+																		"maxLength": 3,
+																		"minLength": 3,
+																		"type": "string"
+																	}
+																},
+																"readOnly": true,
+																"type": "object"
+															},
+															"tripId": {
+																"format": "uuid",
+																"type": "string"
+															}
+														},
+														"readOnly": true,
+														"required": [
+															"id",
+															"tripId"
+														],
+														"title": "PaymentLine",
+														"type": "object"
+													},
+													"tripPaymentId": {
+														"format": "uuid",
+														"readOnly": true,
+														"type": "string"
+													},
+													"unitPriceExcludingVat": {
+														"nullable": true,
+														"properties": {
+															"amount": {
+																"example": 1250,
+																"type": "number"
+															},
+															"currency": {
+																"example": "ISK",
+																"maxLength": 3,
+																"minLength": 3,
+																"type": "string"
+															}
+														},
+														"readOnly": true,
+														"type": "object"
+													}
+												},
+												"title": "Invoice Line",
+												"type": "object"
+											},
+											"readOnly": true,
+											"type": "array"
+										},
+										"totalPrice": {
+											"nullable": true,
+											"properties": {
+												"amount": {
+													"example": 1250,
+													"type": "number"
+												},
+												"currency": {
+													"example": "ISK",
+													"maxLength": 3,
+													"minLength": 3,
+													"type": "string"
+												}
+											},
+											"readOnly": true,
+											"type": "object"
+										},
+										"trip": {
+											"nullable": true,
+											"properties": {
+												"id": {
+													"example": "985c1032-e079-4597-b1c6-ac2223036623",
+													"format": "uuid",
+													"type": "string"
+												},
+												"payments": {
+													"items": {
+														"$id": "TripPayment.json",
+														"description": "A payment line associated with a trip",
+														"properties": {
+															"id": {
+																"format": "uuid",
+																"type": "string"
+															},
+															"invoice": {
+																"$ref": "Invoice.json",
+																"x-recursion": true
+															},
+															"price": {
+																"$id": "Money.json",
+																"nullable": true,
+																"properties": {
+																	"amount": {
+																		"example": 1250,
+																		"type": "number"
+																	},
+																	"currency": {
+																		"example": "ISK",
+																		"maxLength": 3,
+																		"minLength": 3,
+																		"type": "string"
+																	}
+																},
+																"readOnly": true,
+																"type": "object"
+															},
+															"tripId": {
+																"format": "uuid",
+																"type": "string"
+															}
+														},
+														"required": [
+															"id",
+															"tripId"
+														],
+														"title": "PaymentLine",
+														"type": "object"
+													},
+													"type": "array"
+												}
+											},
+											"readOnly": true,
+											"required": [
+												"id"
+											],
+											"title": "Trip",
+											"type": "object"
+										},
+										"tripId": {
+											"format": "uuid",
+											"readOnly": true,
+											"type": "string"
+										}
+									},
+									"title": "Invoice object",
+									"type": "object"
+								}
+							}
+						},
+						"description": "OK"
+					}
+				}
+			},
+			"parameters": [
+				{
+					"description": "Invoice ID",
+					"in": "path",
+					"name": "id",
+					"schema": {
+						"format": "uuid",
+						"type": "string"
+					}
+				}
+			]
+		}
+	}
+}

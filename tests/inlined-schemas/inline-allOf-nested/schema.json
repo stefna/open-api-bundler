@@ -1,0 +1,46 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "test",
+		"version": "1.0",
+		"contact": {
+			"name": "Stefna ehf",
+			"url": "https://stefna.is",
+			"email": "no-support@stefna.is"
+		}
+	},
+	"paths": {
+		"/invoices/{id}": {
+			"parameters": [
+				{
+					"schema": {
+						"type": "string",
+						"format": "uuid"
+					},
+					"in": "path",
+					"name": "id",
+					"description": "Invoice ID"
+				}
+			],
+			"get": {
+				"operationId": "viewInvoice",
+				"responses": {
+					"200": {
+						"description": "OK",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "models/Invoice.json"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"requestBodies": {},
+		"schemas": {}
+	}
+}

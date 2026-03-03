@@ -1,0 +1,17 @@
+{
+	"type": "object",
+	"nullable": true,
+	"properties": {
+		"amount": {
+			"type": "number",
+			"example": 1250
+		},
+		"currency": {
+			"type": "string",
+			"maxLength": 3,
+			"minLength": 3,
+			"example": "ISK"
+		}
+	},
+	"readOnly": true
+}
