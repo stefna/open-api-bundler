@@ -1,0 +1,21 @@
+{
+	"required": true,
+	"content": {
+		"application/json": {
+			"schema": {
+				"allOf": [
+					{
+						"$ref": "../models/Site.yaml"
+					},
+					{
+						"properties": {
+							"extra": {
+								"type": "integer"
+							}
+						}
+					}
+				]
+			}
+		}
+	}
+}

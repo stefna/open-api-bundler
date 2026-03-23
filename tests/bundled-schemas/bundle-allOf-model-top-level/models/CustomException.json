@@ -1,0 +1,12 @@
+{
+	"allOf": [
+		{"$ref": "ErrorException.json"},
+		{
+			"properties": {
+				"custom": {
+					"type": "string"
+				}
+			}
+		}
+	]
+}
