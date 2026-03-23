@@ -158,6 +158,11 @@ final class BundleService
 				$components[$pathKey] = $schemas;
 				$document->set('/components', $components);
 			}
+			if ($schemas) {
+				foreach ($schemas as $key => $schema) {
+					$this->mergeAllOfModels($document, $type, $path . '/' . $key);
+				}
+			}
 		}
 	}
 
@@ -176,6 +181,30 @@ final class BundleService
 				$allOfMergerSchema[$allOfKey] = $merger->merge($allOfKey . '/allOf');
 			}
 		}
+
+		foreach ($allOfMergerSchema as $allOfKey => $mergedSchema) {
+			$document->set($allOfKey, $mergedSchema);
+		}
+	}
+
+	private function mergeAllOfModels(WritableDocument&Document $document, SchemaType $type, string $path): void
+	{
+		if ($type === SchemaType::RequestBodies) {
+			$key = $path . '/content/application%2Fjson/schema/allOf';
+		}
+		elseif ($type === SchemaType::Schema) {
+			$key = $path . '/allOf';
+		}
+		else {
+			return;
+		}
+		if (!$document->has($key)) {
+			return;
+		}
+
+		$merger = new AllOfMerger($document);
+		$allOfMergerSchema = [];
+		$allOfMergerSchema[substr($key, 0, -6)] = $merger->merge($key);
 
 		foreach ($allOfMergerSchema as $allOfKey => $mergedSchema) {
 			$document->set($allOfKey, $mergedSchema);
