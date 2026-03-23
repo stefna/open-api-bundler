@@ -63,6 +63,7 @@ final readonly class AllOfMerger
 
 			$rootValue = $root[$key];
 			if (array_is_list($rootValue)) {
+				// @phpstan-ignore argument.type(we do know it's a list at this point)
 				$root[$key] = array_values(array_unique(array_merge($root[$key], $value)));
 				continue;
 			}
