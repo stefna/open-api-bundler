@@ -108,7 +108,7 @@ final class InlineService
 			$type = $this->resolveSchemaType($documentPaths);
 			$refName = $this->getRefName($reference, $type);
 
-			$nextParentPath = $parentPath;
+			$nextParentPath = ($parentPath ?? '') . $documentPaths[0];
 			if (
 				isset($this->components[$type->name][$refName])
 				&& $this->components[$type->name][$refName]
@@ -147,7 +147,6 @@ final class InlineService
 			}
 			else {
 				$referenceDocument = BasicDocument::fromDocument($this->referenceResolver->resolve($reference));
-				$nextParentPath .= $documentPaths[0];
 				$nextFileRoot = $referenceDocument;
 			}
 			$schemaId = $referenceDocument->get()['$id'] ?? $refName;
@@ -202,7 +201,7 @@ final class InlineService
 			elseif ($processAllOf && str_contains($path, '/allOf/')) {
 				$stripped = substr($path, 0, (int)strpos($path, '/allOf/'));
 				$this->modelAllOfPaths[$parentName][] = $stripped;
-				$this->allOfPaths[] = $parentPath . $stripped;
+				$this->allOfPaths[] = ($parentPath ?? '') . $stripped;
 			}
 			$document->set($path, $schema);
 		}
