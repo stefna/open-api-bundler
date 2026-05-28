@@ -40,7 +40,7 @@ final class LocalReferenceResolver implements ReferenceResolver
 
 		foreach ($tryKeys as $tryKey) {
 			if ($this->rootDocument->has($tryKey)) {
-				/** @var array{"$id"?: string, id?: string, ...}|string $resolvedDocument */
+				/** @var array{"$id"?: string, id?: string, ...<mixed>}|string $resolvedDocument */
 				$resolvedDocument = $this->rootDocument->get($tryKey);
 				if (!is_array($resolvedDocument)) {
 					throw DocumentParseError::invalidContent($tryKey);
