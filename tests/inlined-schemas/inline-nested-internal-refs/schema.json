@@ -1,0 +1,82 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "parking api",
+    "version": "1.0",
+    "contact": {
+      "name": "Stefna ehf",
+      "url": "https://stefna.is",
+      "email": "no-support@stefna.is"
+    }
+  },
+  "paths": {
+    "/customer": {
+      "post": {
+        "summary": "Create new customer",
+        "operationId": "createCustomer",
+        "responses": {
+          "201": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "$ref": "#/components/requestBodies/CreateCustomerPayload"
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Customer": {
+        "title": "Customer",
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Albert Albertsson"
+          },
+          "options": {
+            "$ref": "#/components/schemas/CustomerOption"
+          }
+        }
+      },
+      "CustomerOption": {
+        "type": "object",
+        "properties": {
+          "billingSsn": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "requestBodies": {
+      "CreateCustomerPayload": {
+        "description": "Create customer payload",
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "customer": {
+                  "$ref": "#/components/schemas/Customer"
+                }
+              },
+              "required": [
+                "customer"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

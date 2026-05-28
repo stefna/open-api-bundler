@@ -58,7 +58,7 @@ final class InlineService
 
 		$this->components = [];
 		$this->allOfPaths = [];
-		$document = $this->processDocument($schemaDocument);
+		$document = $this->processDocument($schemaDocument, $schemaDocument);
 		$allOfPaths = array_unique($this->allOfPaths);
 		if ($allOfPaths) {
 			$merger = new AllOfMerger($document);
@@ -98,6 +98,7 @@ final class InlineService
 
 	private function processDocument(
 		Document&WritableDocument $document,
+		Document $fileRoot,
 		?Reference $rootReference = null,
 		?string $parentPath = null,
 	): Document&WritableDocument {
@@ -107,7 +108,7 @@ final class InlineService
 			$type = $this->resolveSchemaType($documentPaths);
 			$refName = $this->getRefName($reference, $type);
 
-			$nextParentPath = $parentPath;
+			$nextParentPath = ($parentPath ?? '') . $documentPaths[0];
 			if (
 				isset($this->components[$type->name][$refName])
 				&& $this->components[$type->name][$refName]
@@ -134,7 +135,7 @@ final class InlineService
 			}
 
 			if ($reference->isInternal()) {
-				$subDocument = $document->get($reference->getPath());
+				$subDocument = $fileRoot->get($reference->getPath());
 				if (!is_array($subDocument)) {
 					throw new \BadMethodCallException('Failed to resolve internal model properly');
 				}
@@ -142,16 +143,18 @@ final class InlineService
 					$refName,
 					$subDocument, // @phpstan-ignore argument.type
 				);
+				$nextFileRoot = $fileRoot;
 			}
 			else {
 				$referenceDocument = BasicDocument::fromDocument($this->referenceResolver->resolve($reference));
-				$nextParentPath .= $documentPaths[0];
+				$nextFileRoot = $referenceDocument;
 			}
 			$schemaId = $referenceDocument->get()['$id'] ?? $refName;
 			// reserve schema to avoid infinite recursion
 			$this->components[$type->name][$refName] = $schemaId;
 			$this->components[$type->name][$refName] = $this->processDocument(
 				$referenceDocument,
+				$nextFileRoot,
 				$reference,
 				$nextParentPath,
 			)->get();
@@ -198,7 +201,7 @@ final class InlineService
 			elseif ($processAllOf && str_contains($path, '/allOf/')) {
 				$stripped = substr($path, 0, (int)strpos($path, '/allOf/'));
 				$this->modelAllOfPaths[$parentName][] = $stripped;
-				$this->allOfPaths[] = $parentPath . $stripped;
+				$this->allOfPaths[] = ($parentPath ?? '') . $stripped;
 			}
 			$document->set($path, $schema);
 		}

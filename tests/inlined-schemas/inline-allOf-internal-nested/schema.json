@@ -1,0 +1,54 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/test": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NestedAllOf"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Base": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" }
+        }
+      },
+      "Intermediate": {
+        "properties": {
+          "subIntermediate": {
+            "allOf": [
+              { "$ref": "#/components/schemas/Base" },
+              {
+                "type": "object",
+                "properties": {
+                  "intermediate": { "type": "boolean" }
+                }
+              }
+            ]
+          }
+        }
+      },
+      "NestedAllOf": {
+        "type": "object",
+        "properties": {
+          "sub": {
+            "$ref": "#/components/schemas/Intermediate"
+          }
+        }
+      }
+    }
+  }
+}

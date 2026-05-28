@@ -1,0 +1,98 @@
+{
+    "openapi": "3.0.0",
+    "paths": {
+        "/test": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "sub": {
+                                            "properties": {
+                                                "subIntermediate": {
+                                                    "allOf": [
+                                                        {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "$id": "Base"
+                                                        },
+                                                        {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "intermediate": {
+                                                                    "type": "boolean"
+                                                                }
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            "$id": "Intermediate"
+                                        }
+                                    },
+                                    "$id": "NestedAllOf"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Base": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Intermediate": {
+                "properties": {
+                    "subIntermediate": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string"
+                            },
+                            "intermediate": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                }
+            },
+            "NestedAllOf": {
+                "type": "object",
+                "properties": {
+                    "sub": {
+                        "properties": {
+                            "subIntermediate": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "intermediate": {
+                                        "type": "boolean"
+                                    }
+                                }
+                            }
+                        },
+                        "$id": "Intermediate"
+                    }
+                }
+            }
+        }
+    }
+}
