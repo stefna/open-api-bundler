@@ -100,7 +100,7 @@ final class InlineService
 		Document&WritableDocument $document,
 		Document $fileRoot,
 		?Reference $rootReference = null,
-		?string $parentPath = null,
+		string $parentPath = '',
 	): Document&WritableDocument {
 		$isAllOfDocument = ($document->get()['allOf'] ?? null) !== null;
 		foreach ($this->findReferences($document, $rootReference) as $ref => $documentPaths) {
@@ -108,7 +108,7 @@ final class InlineService
 			$type = $this->resolveSchemaType($documentPaths);
 			$refName = $this->getRefName($reference, $type);
 
-			$nextParentPath = ($parentPath ?? '') . $documentPaths[0];
+			$nextParentPath = $parentPath . $documentPaths[0];
 			if (
 				isset($this->components[$type->name][$refName])
 				&& $this->components[$type->name][$refName]
@@ -188,20 +188,20 @@ final class InlineService
 		array $documentPaths,
 		string $refName,
 		?string $parentName = null,
-		?string $parentPath = null,
+		string $parentPath = '',
 		bool $processAllOf = true,
 	): Document&WritableDocument {
 		$parentName ??= 'root';
 		foreach ($documentPaths as $path) {
 			if ($processAllOf && array_key_exists($refName, $this->modelAllOfPaths)) {
 				foreach ($this->modelAllOfPaths[$refName] as $allOfPath) {
-					$this->allOfPaths[] = ($parentPath ?? '') . $path . $allOfPath;
+					$this->allOfPaths[] = $parentPath . $path . $allOfPath;
 				}
 			}
 			elseif ($processAllOf && str_contains($path, '/allOf/')) {
 				$stripped = substr($path, 0, (int)strpos($path, '/allOf/'));
 				$this->modelAllOfPaths[$parentName][] = $stripped;
-				$this->allOfPaths[] = ($parentPath ?? '') . $stripped;
+				$this->allOfPaths[] = $parentPath . $stripped;
 			}
 			$document->set($path, $schema);
 		}
