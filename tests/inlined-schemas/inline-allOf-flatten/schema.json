@@ -1,0 +1,118 @@
+{
+	"openapi": "3.0.3",
+	"info": {
+		"title": "Payment Gateway API - Modifications",
+		"version": "1.0.0"
+	},
+	"paths": {
+		"/modification/capture": {
+			"post": {
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AmountModificationRequest"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "ok"
+					}
+				}
+			}
+		},
+		"/modification/reverse": {
+			"post": {
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/BaseModificationRequest"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "ok"
+					}
+				}
+			}
+		},
+		"/modification/refund": {
+			"post": {
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/RefundRequest"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "ok"
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"BaseModificationRequest": {
+				"type": "object",
+				"required": [
+					"reference"
+				],
+				"properties": {
+					"reference": {
+						"type": "string"
+					}
+				}
+			},
+			"AmountModificationRequest": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/BaseModificationRequest"
+					},
+					{
+						"type": "object",
+						"required": [
+							"amount",
+							"currency"
+						],
+						"properties": {
+							"amount": {
+								"type": "integer"
+							},
+							"currency": {
+								"type": "string"
+							}
+						}
+					}
+				]
+			},
+			"RefundRequest": {
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/AmountModificationRequest"
+					},
+					{
+						"type": "object",
+						"properties": {
+							"refundReason": {
+								"type": "string"
+							}
+						}
+					}
+				]
+			}
+		}
+	}
+}
