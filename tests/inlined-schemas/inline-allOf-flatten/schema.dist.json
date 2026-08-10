@@ -1,0 +1,178 @@
+{
+	"components": {
+		"schemas": {
+			"AmountModificationRequest": {
+				"properties": {
+					"amount": {
+						"type": "integer"
+					},
+					"currency": {
+						"type": "string"
+					},
+					"reference": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"reference",
+					"amount",
+					"currency"
+				],
+				"type": "object"
+			},
+			"BaseModificationRequest": {
+				"properties": {
+					"reference": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"reference"
+				],
+				"type": "object"
+			},
+			"RefundRequest": {
+				"allOf": [
+					{
+						"$id": "AmountModificationRequest",
+						"properties": {
+							"amount": {
+								"type": "integer"
+							},
+							"currency": {
+								"type": "string"
+							},
+							"reference": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"reference",
+							"amount",
+							"currency"
+						],
+						"type": "object"
+					},
+					{
+						"properties": {
+							"refundReason": {
+								"type": "string"
+							}
+						},
+						"type": "object"
+					}
+				]
+			}
+		}
+	},
+	"info": {
+		"title": "Payment Gateway API - Modifications",
+		"version": "1.0.0"
+	},
+	"openapi": "3.0.3",
+	"paths": {
+		"/modification/capture": {
+			"post": {
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$id": "AmountModificationRequest",
+								"properties": {
+									"amount": {
+										"type": "integer"
+									},
+									"currency": {
+										"type": "string"
+									},
+									"reference": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"reference",
+									"amount",
+									"currency"
+								],
+								"type": "object"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "ok"
+					}
+				}
+			}
+		},
+		"/modification/refund": {
+			"post": {
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$id": "RefundRequest",
+								"properties": {
+									"amount": {
+										"type": "integer"
+									},
+									"currency": {
+										"type": "string"
+									},
+									"reference": {
+										"type": "string"
+									},
+									"refundReason": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"reference",
+									"amount",
+									"currency"
+								],
+								"type": "object"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "ok"
+					}
+				}
+			}
+		},
+		"/modification/reverse": {
+			"post": {
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$id": "BaseModificationRequest",
+								"properties": {
+									"reference": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"reference"
+								],
+								"type": "object"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "ok"
+					}
+				}
+			}
+		}
+	}
+}
