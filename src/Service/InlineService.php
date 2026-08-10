@@ -6,6 +6,8 @@ use JsonPointer\BasicDocument;
 use JsonPointer\Document;
 use JsonPointer\DocumentFactory;
 use JsonPointer\Exceptions\DocumentParseError;
+use JsonPointer\Exceptions\InvalidPointer;
+use JsonPointer\Exceptions\Reference as ReferenceException;
 use JsonPointer\Reference;
 use JsonPointer\ReferenceResolver\ReferenceResolver;
 use JsonPointer\ReferenceResolver\ReferenceResolverCollection;
@@ -68,7 +70,7 @@ final class InlineService
 					/** @var array{"$id": string} $mergedSchema */
 					$mergedSchema = $merger->merge($path . '/allOf');
 				}
-				catch (\JsonPointer\Exceptions\Reference) {
+				catch (ReferenceException | InvalidPointer) {
 					continue;
 				}
 				if ($path === '') {
